@@ -121,6 +121,12 @@ earlyz format xxx.docx --spec yyy.docx
 
 ---
 
+## 与桌面版的关系
+
+EarlyZ CLI 是核心排版引擎的**开源子集**（规范模板驱动的 OOXML 排版、三命令）。桌面版在此基础上更多：公式（自研 MathType 组件）、LaTeX、事务回滚、更多动作与 LLM Agent 闭环，为闭源商业版。
+
+---
+
 ## 相关项目
 
 - [EarlyZ](https://baolongzhanshen.cn) — 对话式排版 Agent 桌面应用（闭源商业版）
