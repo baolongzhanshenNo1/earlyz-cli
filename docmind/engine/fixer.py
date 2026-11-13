@@ -233,6 +233,49 @@ def _verify_header_font(target_path: Path, params: dict, get_xml, idx: int) -> l
 
 @_verifier("set_page_number_type")
 def _verify_page_number_type(target_path: Path, params: dict, get_xml, idx: int) -> list[FixerDiagnostic]:
+    section_index = params["section_index"]
+    expected_fmt = params["fmt"]
+
+    root = get_xml("word/document.xml")
+    sects = list(root.iter(f"{{{W}}}sectPr"))
+
+    if section_index >= len(sects):
+        return [FixerDiagnostic(
+            code="PAGE_NUMBER_TYPE_INDEX_OUT_OF_RANGE",
+            action_index=idx,
+            severity="error",
+            detail=f"section_index={section_index} 超出范围 (共 {len(sects)} 个 sectPr)",
+            expected=expected_fmt,
+            actual=None,
+            suggestion=f"文档只有 {len(sects)} 个节，section_index 应为 0~{len(sects)-1}。请重新运行 DocDiscover 刷新节计数。",
+        )]
+
+    sp = sects[section_index]
+    pnt = sp.find(f"{{{W}}}pgNumType")
+
+    if pnt is None:
+        return [FixerDiagnostic(
+            code="PAGE_NUMBER_TYPE_MISSING",
+            action_index=idx,
+            severity="error",
+            detail=f"sectPr[{section_index}] 中无 pgNumType 元素",
+            expected={"fmt": expected_fmt},
+            actual=None,
+            suggestion=f"第 {section_index+1} 节的页码格式未设置。请重新运行 set_page_number_type action，或手动在 Word 的「插入→页码→设置页码格式」中调整。",
+        )]
+
+    actual_fmt = pnt.get(f"{{{W}}}fmt")
+    if actual_fmt != expected_fmt:
+        return [FixerDiagnostic(
+            code="PAGE_NUMBER_TYPE_MISMATCH",
+            action_index=idx,
+            severity="error",
+            detail=f"sectPr[{section_index}] pgNumType fmt 期望={expected_fmt} 实际={actual_fmt}",
+            expected=expected_fmt,
+            actual=actual_fmt,
+            suggestion=f"页码格式未生效。请确认 set_page_number_type action 的 fmt 参数正确，或手动在 Word 的「插入→页码→设置页码格式」中调整。",
+        )]
+
     return []
 
 
@@ -240,6 +283,36 @@ def _verify_page_number_type(target_path: Path, params: dict, get_xml, idx: int)
 
 @_verifier("add_footer_reference")
 def _verify_footer_reference(target_path: Path, params: dict, get_xml, idx: int) -> list[FixerDiagnostic]:
+    section_index = params["section_index"]
+
+    root = get_xml("word/document.xml")
+    sects = list(root.iter(f"{{{W}}}sectPr"))
+
+    if section_index >= len(sects):
+        return [FixerDiagnostic(
+            code="FOOTER_REF_INDEX_OUT_OF_RANGE",
+            action_index=idx,
+            severity="error",
+            detail=f"section_index={section_index} 超出范围 (共 {len(sects)} 个 sectPr)",
+            expected="footerReference",
+            actual=None,
+            suggestion=f"文档只有 {len(sects)} 个节，section_index 应为 0~{len(sects)-1}。请重新运行 DocDiscover 刷新节计数。",
+        )]
+
+    sp = sects[section_index]
+    fr = sp.find(f"{{{W}}}footerReference")
+
+    if fr is None:
+        return [FixerDiagnostic(
+            code="FOOTER_REFERENCE_MISSING",
+            action_index=idx,
+            severity="error",
+            detail=f"sectPr[{section_index}] 中无 footerReference 元素",
+            expected="footerReference type=default",
+            actual=None,
+            suggestion=f"第 {section_index+1} 节缺少页脚引用。请确认文档中已存在页脚文件（如 footer1.xml），并重新运行 add_footer_reference action。",
+        )]
+
     return []
 
 
@@ -247,7 +320,50 @@ def _verify_footer_reference(target_path: Path, params: dict, get_xml, idx: int)
 
 @_verifier("clear_section_headers")
 def _verify_clear_headers(target_path: Path, params: dict, get_xml, idx: int) -> list[FixerDiagnostic]:
-    return []
+    section_index = params["section_index"]
+
+    root = get_xml("word/document.xml")
+    sects = list(root.iter(f"{{{W}}}sectPr"))
+
+    if section_index >= len(sects):
+        return [FixerDiagnostic(
+            code="CLEAR_HEADERS_INDEX_OUT_OF_RANGE",
+            action_index=idx,
+            severity="error",
+            detail=f"section_index={section_index} 超出范围 (共 {len(sects)} 个 sectPr)",
+            expected="无 headerReference 和 evenAndOddHeaders",
+            actual=None,
+            suggestion=f"文档只有 {len(sects)} 个节，section_index 应为 0~{len(sects)-1}。请重新运行 DocDiscover 刷新节计数。",
+        )]
+
+    sp = sects[section_index]
+    issues = []
+
+    hr_list = sp.findall(f"{{{W}}}headerReference")
+    if hr_list:
+        issues.append(FixerDiagnostic(
+            code="HEADER_REFERENCE_NOT_CLEARED",
+            action_index=idx,
+            severity="error",
+            detail=f"sectPr[{section_index}] 仍有 {len(hr_list)} 个 headerReference 未清除",
+            expected="0个 headerReference",
+            actual=f"{len(hr_list)}个 headerReference 残留",
+            suggestion=f"第 {section_index+1} 节仍有 {len(hr_list)} 个页眉引用未清除。请重新运行 clear_section_headers action。",
+        ))
+
+    eoh = sp.find(f"{{{W}}}evenAndOddHeaders")
+    if eoh is not None:
+        issues.append(FixerDiagnostic(
+            code="EVEN_ODD_HEADERS_NOT_CLEARED",
+            action_index=idx,
+            severity="error",
+            detail=f"sectPr[{section_index}] 仍有 evenAndOddHeaders 未清除",
+            expected="无 evenAndOddHeaders",
+            actual="evenAndOddHeaders 残留",
+            suggestion=f"第 {section_index+1} 节的 evenAndOddHeaders 未清除。请重新运行 clear_section_headers action。",
+        ))
+
+    return issues
 
 
 # ── 验证: add_page_number ───────────────────────────────────
