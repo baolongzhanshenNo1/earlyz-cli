@@ -1,4 +1,4 @@
-"""pytest fixtures shared across DocMind 2.0 unit tests."""
+"""pytest fixtures shared across EarlyZ 2.0 unit tests."""
 import pytest
 from docx import Document
 

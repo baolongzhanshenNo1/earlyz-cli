@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-DocMind Agent 边界场景和错误处理测试
+EarlyZ Agent 边界场景和错误处理测试
 
 测试场景:
 1. 模糊命令 — Agent 应要求用户提供更具体的指令
@@ -31,7 +31,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from docx import Document
 from docx.shared import Pt
-from pipeline.agent import DocMindAgent, AgentResult
+from earlyz.pipeline.agent import EarlyZAgent, AgentResult
 
 # ── Config ──────────────────────────────────────────────
 
@@ -152,7 +152,7 @@ def test_vague_feedback_parsing():
     """模糊反馈解析 — 不应错误解析"""
     print("\n--- Test 1b: 模糊反馈解析 ---")
     try:
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         agent._parse_feedback("帮我把文档排好看一点")
         overrides = agent.get_overrides()
         # 模糊命令不应产生覆盖值
@@ -208,7 +208,7 @@ def test_conflicting_feedback_parsing():
     """冲突反馈解析 — 应执行后者（黑体五号）"""
     print("\n--- Test 2b: 冲突反馈解析 ---")
     try:
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         agent._parse_feedback("正文设为宋体小四，但是正文设为黑体五号")
         overrides = agent.get_overrides()
         print(f"  Overrides: {overrides}")
@@ -273,7 +273,7 @@ def test_nonexistent_section_pipeline():
         _make_minimal_docx(target_path, sections=3)
         _make_spec_docx(spec_path)
 
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         result = agent.run(
             spec_path=spec_path,
             target_path=target_path,
@@ -348,7 +348,7 @@ def test_all_sections_header_pipeline():
         _make_minimal_docx(target_path, sections=5)
         _make_spec_docx(spec_path)
 
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         result = agent.run(
             spec_path=spec_path,
             target_path=target_path,
@@ -388,7 +388,7 @@ def test_empty_docx_pipeline():
         _make_empty_docx(target_path)
         _make_spec_docx(spec_path)
 
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         result = agent.run(
             spec_path=spec_path,
             target_path=target_path,
@@ -513,8 +513,8 @@ def test_concurrent_chat_requests():
 def test_concurrent_format_requests():
     """同时发送 2 个格式化请求"""
     print("\n--- Test 7b: 并发格式化请求 ---")
-    test_file = "D:/Microsoft VS Code Projects/office/docmind/output/thesis_test.docx"
-    spec_file = "D:/Microsoft VS Code Projects/office/docmind/output/spec_template.docx"
+    test_file = "D:/Microsoft VS Code Projects/office/earlyz/output/thesis_test.docx"
+    spec_file = "D:/Microsoft VS Code Projects/office/earlyz/output/spec_template.docx"
 
     if not Path(test_file).exists() or not Path(spec_file).exists():
         record("7b: 并发格式化 → 跳过", True, "Test files not found")
@@ -616,7 +616,7 @@ def test_long_feedback_parsing():
             "page_number_format=第{PAGE}页共{NUMPAGES}页"
         )
 
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         agent._parse_feedback(long_feedback)
         overrides = agent.get_overrides()
         print(f"  Overrides: {overrides}")
@@ -669,7 +669,7 @@ def test_pipeline_rollback():
         corrupted_spec = spec_path.parent / "corrupted_test.docx"
         corrupted_spec.write_text("this is not a valid docx file", encoding="utf-8")
 
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         try:
             result = agent.run(
                 spec_path=corrupted_spec,
@@ -682,7 +682,7 @@ def test_pipeline_rollback():
         except Exception as e:
             print(f"  Pipeline exception (expected): {type(e).__name__}: {str(e)[:150]}")
             # 检查回滚
-            backup = target_path.parent / (target_path.stem + ".docmind_backup")
+            backup = target_path.parent / (target_path.stem + ".earlyz_backup")
             backup_exists = backup.exists()
             print(f"  Backup file exists: {backup_exists}")
             record("Bonus: 损坏 spec → Pipeline 回滚",
@@ -702,7 +702,7 @@ def test_pipeline_rollback():
 def test_nonexistent_file():
     """不存在的文件"""
     print("\n--- Test Bonus: 不存在的文件 ---")
-    agent = DocMindAgent()
+    agent = EarlyZAgent()
     nonexistent = Path("D:/nonexistent_file_12345.docx")
 
     try:
@@ -728,7 +728,7 @@ def test_nonexistent_file():
 
 def main():
     print("=" * 70)
-    print("  DocMind Agent 边界场景和错误处理测试")
+    print("  EarlyZ Agent 边界场景和错误处理测试")
     print("=" * 70)
 
     # ── Test 1: 模糊命令 ──

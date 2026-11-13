@@ -1,4 +1,4 @@
-"""Unit tests for pipeline/agent.py — DocMindAgent orchestration."""
+"""Unit tests for pipeline/agent.py — EarlyZAgent orchestration."""
 import tempfile
 import zipfile
 from pathlib import Path
@@ -7,7 +7,7 @@ import pytest
 from docx import Document
 from lxml import etree
 
-from pipeline.agent import DocMindAgent, AgentResult, _copy_format_params, _brief_action
+from earlyz.pipeline.agent import EarlyZAgent, AgentResult, _copy_format_params, _brief_action
 
 W = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main'
 
@@ -72,7 +72,7 @@ class TestAgentResult:
         assert r.logs == []
 
     def test_with_values(self):
-        from pipeline.fixer_v2 import FixerDiagnostic
+        from earlyz.engine.fixer import FixerDiagnostic
         r = AgentResult(
             plan=[{'action': 'x'}],
             issues=[FixerDiagnostic(code='TEST', action_index=0, severity='info', detail='d')],
@@ -86,39 +86,39 @@ class TestAgentResult:
         assert r.output_path == Path('/tmp/test.docx')
 
 
-# ── Test: DocMindAgent initialization ───────────────────
+# ── Test: EarlyZAgent initialization ───────────────────
 
-class TestDocMindAgentInit:
+class TestEarlyZAgentInit:
     def test_creates_instance(self):
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         assert agent is not None
 
     def test_initial_state(self):
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         assert agent._fix_plan == []
         assert agent._spec_rules == {}
         assert agent._user_overrides == {}
 
     def test_preview_plan_empty(self):
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         assert agent.preview_plan() == []
 
     def test_get_overrides_empty(self):
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         assert agent.get_overrides() == {}
 
     def test_reset_overrides(self):
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         agent._user_overrides['test'] = 'value'
         agent.reset_overrides()
         assert agent.get_overrides() == {}
 
 
-# ── Test: DocMindAgent.run() ────────────────────────────
+# ── Test: EarlyZAgent.run() ────────────────────────────
 
-class TestDocMindAgentRun:
+class TestEarlyZAgentRun:
     def test_run_returns_agent_result(self, temp_spec, temp_target, temp_output):
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         result = agent.run(
             spec_path=temp_spec,
             target_path=temp_target,
@@ -128,7 +128,7 @@ class TestDocMindAgentRun:
         assert result.output_path == temp_output
 
     def test_run_produces_plan(self, temp_spec, temp_target, temp_output):
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         result = agent.run(
             spec_path=temp_spec,
             target_path=temp_target,
@@ -138,7 +138,7 @@ class TestDocMindAgentRun:
         assert result.fixed_count >= 0
 
     def test_run_has_logs(self, temp_spec, temp_target, temp_output):
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         result = agent.run(
             spec_path=temp_spec,
             target_path=temp_target,
@@ -149,7 +149,7 @@ class TestDocMindAgentRun:
         assert any('STEP 5/5' in l for l in result.logs)
 
     def test_run_output_exists(self, temp_spec, temp_target, temp_output):
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         agent.run(
             spec_path=temp_spec,
             target_path=temp_target,
@@ -158,7 +158,7 @@ class TestDocMindAgentRun:
         assert temp_output.exists()
 
     def test_run_with_same_output(self, temp_spec, temp_target):
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         result = agent.run(
             spec_path=temp_spec,
             target_path=temp_target,
@@ -171,7 +171,7 @@ class TestDocMindAgentRun:
 
 class TestFeedbackLoop:
     def test_handle_feedback_key_value(self, temp_spec, temp_target, temp_output):
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         agent.run(spec_path=temp_spec, target_path=temp_target, output_path=temp_output)
 
         result = agent.handle_feedback('h1_font_east=黑体, h1_size_pt=16')
@@ -181,21 +181,21 @@ class TestFeedbackLoop:
         assert overrides.get('h1_size_pt') == 16
 
     def test_handle_feedback_numeric_conversion(self, temp_spec, temp_target, temp_output):
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         agent.run(spec_path=temp_spec, target_path=temp_target, output_path=temp_output)
 
         agent.handle_feedback('h1_size_pt=16.5')
         assert agent.get_overrides()['h1_size_pt'] == 16.5
 
     def test_handle_feedback_integer_conversion(self, temp_spec, temp_target, temp_output):
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         agent.run(spec_path=temp_spec, target_path=temp_target, output_path=temp_output)
 
         agent.handle_feedback('h1_size_pt=16')
         assert agent.get_overrides()['h1_size_pt'] == 16
 
     def test_handle_feedback_natural_language(self, temp_spec, temp_target, temp_output):
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         agent.run(spec_path=temp_spec, target_path=temp_target, output_path=temp_output)
 
         # Test blank page removal
@@ -204,7 +204,7 @@ class TestFeedbackLoop:
         assert agent.get_overrides().get('remove_blank_pages') is True
 
     def test_handle_feedback_font_keyword(self, temp_spec, temp_target, temp_output):
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         agent.run(spec_path=temp_spec, target_path=temp_target, output_path=temp_output)
 
         agent.handle_feedback('把标题字体改成黑体')
@@ -212,7 +212,7 @@ class TestFeedbackLoop:
         assert agent.get_overrides()['h1_font_east'] == '黑体'
 
     def test_handle_feedback_multiple_rounds(self, temp_spec, temp_target, temp_output):
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         agent.run(spec_path=temp_spec, target_path=temp_target, output_path=temp_output)
 
         agent.handle_feedback('h1_font_east=黑体')
@@ -288,7 +288,7 @@ class TestHelperFunctions:
 
 class TestReconciliation:
     def test_reconcile_produces_non_empty_plan(self, temp_spec, temp_target):
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         agent._spec_path = temp_spec
         agent._target_path = temp_target
         agent._spec_rules = {
@@ -307,7 +307,7 @@ class TestReconciliation:
         assert len(style_actions) >= 1
 
     def test_reconcile_no_spec_rules(self, temp_spec, temp_target):
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         agent._spec_path = temp_spec
         agent._target_path = temp_target
         agent._spec_rules = {}
@@ -325,7 +325,7 @@ class TestReconciliation:
 
 class TestUserOverrides:
     def test_override_h1_font_applied(self, temp_spec, temp_target):
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         agent._spec_path = temp_spec
         agent._target_path = temp_target
         agent._spec_rules = {
@@ -346,7 +346,7 @@ class TestUserOverrides:
         assert h1_actions[0]['params'].get('font_eastAsia') == '黑体'
 
     def test_override_header_font_applied(self, temp_spec, temp_target):
-        agent = DocMindAgent()
+        agent = EarlyZAgent()
         agent._spec_path = temp_spec
         agent._target_path = temp_target
         agent._spec_rules = {

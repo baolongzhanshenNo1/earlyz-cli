@@ -8,7 +8,7 @@ import pytest
 import yaml
 from lxml import etree
 
-from generator.template_analyzer import (
+from earlyz.analyzer.template_analyzer import (
     # Pure helpers
     twips_to_pt,
     twips_to_cm,

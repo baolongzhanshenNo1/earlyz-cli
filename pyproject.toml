@@ -1,12 +1,12 @@
 [project]
-name = "docmind"
+name = "earlyz-cli"
 version = "2.0.0"
-description = "DocMind 2.0 — 毕业设计文档生成与排版工具"
+description = "EarlyZ CLI — 专治 Word 排版疑难杂症（规范模板驱动的 OOXML 排版引擎）"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
 license-files = ["LICENSE"]
-keywords = ["thesis", "docx", "generation", "typesetting"]
+keywords = ["earlyz", "word", "docx", "ooxml", "typesetting", "thesis", "cli"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Education",
@@ -33,18 +33,15 @@ dev = [
 ]
 
 [project.scripts]
-docmind = "cli_new:cli"
+earlyz = "earlyz.cli:cli"
 
 [project.urls]
-Homepage = "https://github.com/user/docmind"
-Repository = "https://github.com/user/docmind"
-
-[tool.setuptools]
-py-modules = ["cli_new"]
+Homepage = "https://github.com/baolongzhanshenNo1/earlyz-cli"
+Repository = "https://github.com/baolongzhanshenNo1/earlyz-cli"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["docmind*", "pipeline*", "enforce*", "generator*"]
+include = ["earlyz*"]
 
 [tool.ruff]
 target-version = "py311"
@@ -65,7 +62,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.isort]
-known-first-party = ["generator", "enforce", "tests"]
+known-first-party = ["earlyz", "tests"]
 
 [tool.ruff.format]
 quote-style = "single"

@@ -1,7 +1,7 @@
-<h1 align="center">DocMind CLI</h1>
+<h1 align="center">EarlyZ CLI</h1>
 
 <p align="center">
-  <strong>AI 驱动的智能文档排版工具</strong> — 专治 Word 排版疑难杂症
+  <strong>规范模板驱动的 Word 排版引擎</strong> — 专治 Word 排版疑难杂症
 </p>
 
 <p align="center">
@@ -16,7 +16,7 @@
 
 如果你写过长文档——毕业论文、合同、标书、技术手册——你一定经历过这些：
 
-| 折磨 | DocMind 怎么做 |
+| 折磨 | EarlyZ 怎么做 |
 |------|---------------|
 | 封面莫名其妙出现页眉，删不掉 | 前置页（封面/声明）自动清空页眉页码 |
 | 正文各章页眉全是"参考文献" | 每节创建独立页眉，各章自动显示对应标题 |
@@ -32,15 +32,15 @@
 ## ⚡ 快速开始
 
 ```bash
-git clone https://github.com/baolongzhanshenNo1/docmind-cli.git
-cd docmind-cli
+git clone https://github.com/baolongzhanshenNo1/earlyz-cli.git
+cd earlyz-cli
 pip install .
 
 # 最常用：论文按规范排版
-docmind format my_thesis.docx --spec university_spec.docx
+earlyz format my_thesis.docx --spec university_spec.docx
 
 # 提取规范模板的格式规则 → YAML
-docmind analyze university_spec.docx
+earlyz analyze university_spec.docx
 ```
 
 ### `format` 示例输出
@@ -48,14 +48,14 @@ docmind analyze university_spec.docx
 ```
   目标文档 → my_thesis.docx
   规范模板 → university_spec.docx
-  正在排版… ⣾
+  正在排版…
 
-   📄 修正项  61
-   🔄 残留    0
-   ⚠️  诊断    0
-   📦 输出    my_thesis_formatted.docx
+   修正项  61
+   残留    0
+   诊断    0
+   输出    my_thesis_formatted.docx
 
-✅ 排版完成
+排版完成
 ```
 
 ---
@@ -64,9 +64,9 @@ docmind analyze university_spec.docx
 
 | 命令 | 作用 |
 |------|------|
-| `docmind format <论文> --spec <规范>` | 按规范模板排版 |
-| `docmind analyze <规范>` | 提取格式规则 → YAML |
-| `docmind enforce <文档>` | 奇偶页强制（需 LibreOffice） |
+| `earlyz format <论文> --spec <规范>` | 按规范模板排版 |
+| `earlyz analyze <规范>` | 提取格式规则 → YAML |
+| `earlyz enforce <文档>` | 奇偶页强制（需 LibreOffice） |
 
 ---
 
@@ -74,13 +74,13 @@ docmind analyze university_spec.docx
 
 | 能力 | 说明 |
 |------|------|
-| 📐 页眉 | 全文各节独立页眉（封面/声明自动清空） |
-| 📄 页码 | 前置罗马数字 / 正文阿拉伯数字 / 封面前置无页码 |
-| 🔢 奇偶页 | 每章奇数页起始 / 扉页空白页插入 |
-| 🎨 字体 | 中文宋体+标题黑体 / 英文 Times New Roman（Ascii/EastAsian 分离） |
-| 📏 边距 | 严格对齐规范模板 |
-| 📑 分节符 | 拆分合并节 / 补断链引用 |
-| ✅ 诊断 | 排版后自动 Fixer 诊断，0 残留才通过 |
+| 页眉 | 全文各节独立页眉（封面/声明自动清空） |
+| 页码 | 前置罗马数字 / 正文阿拉伯数字 / 封面前置无页码 |
+| 奇偶页 | 每章奇数页起始 / 扉页空白页插入 |
+| 字体 | 中文宋体+标题黑体 / 英文 Times New Roman（Ascii/EastAsian 分离） |
+| 边距 | 严格对齐规范模板 |
+| 分节符 | 拆分合并节 / 补断链引用 |
+| 诊断 | 排版后自动 Fixer 诊断，0 残留才通过 |
 
 ---
 
@@ -105,16 +105,16 @@ pytest tests/ -q
 ## 架构
 
 ```
-docmind format xxx.docx --spec yyy.docx
+earlyz format xxx.docx --spec yyy.docx
       │
       ▼
-  DocMindAgent (pipeline/agent.py)
+  EarlyZAgent (earlyz/pipeline/agent.py)
       │
-      ├── SpecReader   ── 从规范模板提取字体/边距/页眉格式
-      ├── DocDiscover  ── 自动发现文档章节结构
-      ├── Reconciler   ── 差异对比 → 生成修复计划
-      ├── Writer       ── ZIP 级 OOXML 写入（7种操作）
-      └── Fixer        ── 诊断执行结果（8种验证器）
+      ├── SpecReader   ── 从规范模板提取字体/边距/页眉格式 (earlyz/engine/spec_reader.py)
+      ├── DocDiscover  ── 自动发现文档章节结构 (earlyz/pipeline/doc_discover.py)
+      ├── Reconciler   ── 差异对比 → 生成修复计划 (agent 内嵌)
+      ├── Writer       ── ZIP 级 OOXML 写入（7种操作）(earlyz/engine/writer.py)
+      └── Fixer        ── 诊断执行结果（8种验证器）(earlyz/engine/fixer.py)
 ```
 
 所有操作基于 OOXML ZIP 层直接修改，不依赖 Word 或 LibreOffice 运行时。
@@ -123,7 +123,7 @@ docmind format xxx.docx --spec yyy.docx
 
 ## 相关项目
 
-- [DocMind Desktop](https://github.com/baolongzhanshenNo1) — 对话式 Agent 桌面应用（Tauri + Vue 3），自然语言指令排版
+- [EarlyZ](https://baolongzhanshen.cn) — 对话式排版 Agent 桌面应用（闭源商业版）
 
 ---
 

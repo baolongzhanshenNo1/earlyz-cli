@@ -1,5 +1,5 @@
 """Tests for EnforceConfig dataclass."""
-from enforce.config import EnforceConfig
+from earlyz.enforce.config import EnforceConfig
 from pathlib import Path
 
 

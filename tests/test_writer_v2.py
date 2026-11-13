@@ -1,4 +1,4 @@
-"""Unit tests for pipeline/writer_v2.py — pure executor."""
+"""Unit tests for earlyz.engine.writer — pure executor."""
 import tempfile
 import zipfile
 from pathlib import Path
@@ -9,7 +9,7 @@ from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from lxml import etree
 
-from pipeline.writer_v2 import (
+from earlyz.engine.writer import (
     apply_fixes,
     _ACTION_HANDLERS,
     _zip_replace,

@@ -13,7 +13,10 @@ build/
 dist/
 *.egg-info/
 
+# venv
+.venv/
+
 # local test documents & scratch
 *.docx
-*.docmind_backup
+*.earlyz_backup
 _vcheck/

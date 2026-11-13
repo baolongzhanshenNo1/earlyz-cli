@@ -43,12 +43,12 @@ class TestGetSectionStartPages:
 
     def test_imports_without_fitz_available(self):
         """The function should be importable (real fitz may not be installed)."""
-        from enforce.pdf_reader import get_section_start_pages
+        from earlyz.enforce.pdf_reader import get_section_start_pages
         assert callable(get_section_start_pages)
 
-    @patch("enforce.pdf_reader.fitz")
+    @patch("earlyz.enforce.pdf_reader.fitz")
     def test_returns_page_numbers_when_heading_found(self, mock_fitz):
-        from enforce.pdf_reader import get_section_start_pages
+        from earlyz.enforce.pdf_reader import get_section_start_pages
 
         mock_doc = _mock_pdf_doc({
             0: [_make_text_block(y0=80, text="摘要"),
@@ -61,9 +61,9 @@ class TestGetSectionStartPages:
         result = get_section_start_pages(Path("fake.pdf"), ["绪论"])
         assert result == [3]  # LAST match (avoid TOC), page 3 = 1-based page 3
 
-    @patch("enforce.pdf_reader.fitz")
+    @patch("earlyz.enforce.pdf_reader.fitz")
     def test_returns_none_when_heading_not_found(self, mock_fitz):
-        from enforce.pdf_reader import get_section_start_pages
+        from earlyz.enforce.pdf_reader import get_section_start_pages
 
         mock_doc = _mock_pdf_doc({
             0: [_make_text_block(y0=80, text="摘要")],
@@ -74,9 +74,9 @@ class TestGetSectionStartPages:
         result = get_section_start_pages(Path("fake.pdf"), ["绪论"])
         assert result == [None]
 
-    @patch("enforce.pdf_reader.fitz")
+    @patch("earlyz.enforce.pdf_reader.fitz")
     def test_multiple_sections_in_order(self, mock_fitz):
-        from enforce.pdf_reader import get_section_start_pages
+        from earlyz.enforce.pdf_reader import get_section_start_pages
 
         mock_doc = _mock_pdf_doc({
             1: [_make_text_block(y0=90, text="第一章 绪论")],
@@ -91,10 +91,10 @@ class TestGetSectionStartPages:
         )
         assert result == [2, 4, 5]
 
-    @patch("enforce.pdf_reader.fitz")
+    @patch("earlyz.enforce.pdf_reader.fitz")
     def test_cover_heading_special_y_threshold(self, mock_fitz):
         """Cover heading uses standard Y threshold. LAST match returns later page."""
-        from enforce.pdf_reader import get_section_start_pages
+        from earlyz.enforce.pdf_reader import get_section_start_pages
 
         mock_doc = _mock_pdf_doc({
             0: [_make_text_block(y0=150, text="封面")],
@@ -105,10 +105,10 @@ class TestGetSectionStartPages:
         result = get_section_start_pages(Path("fake.pdf"), ["封面"])
         assert result == [2]  # LAST match: page 2 (1-based)
 
-    @patch("enforce.pdf_reader.fitz")
+    @patch("earlyz.enforce.pdf_reader.fitz")
     def test_heading_matches_any_y_with_page_text(self, mock_fitz):
         """With page-level normalized matching, headings at any y can match."""
-        from enforce.pdf_reader import get_section_start_pages
+        from earlyz.enforce.pdf_reader import get_section_start_pages
 
         mock_doc = _mock_pdf_doc({
             0: [_make_text_block(y0=200, text="绪论")],
@@ -118,10 +118,10 @@ class TestGetSectionStartPages:
         result = get_section_start_pages(Path("fake.pdf"), ["绪论"])
         assert result == [1]  # page-level match finds it regardless of y
 
-    @patch("enforce.pdf_reader.fitz")
+    @patch("earlyz.enforce.pdf_reader.fitz")
     def test_last_occurrence_for_non_toc_is_returned(self, mock_fitz):
         """非目录标题使用 LAST 匹配（避免 TOC 误匹配）"""
-        from enforce.pdf_reader import get_section_start_pages
+        from earlyz.enforce.pdf_reader import get_section_start_pages
 
         mock_doc = _mock_pdf_doc({
             1: [_make_text_block(y0=80, text="实验")],
@@ -132,9 +132,9 @@ class TestGetSectionStartPages:
         result = get_section_start_pages(Path("fake.pdf"), ["实验"])
         assert result == [3]  # LAST: page 3 (1-based), avoids TOC on page 2
 
-    @patch("enforce.pdf_reader.fitz")
+    @patch("earlyz.enforce.pdf_reader.fitz")
     def test_empty_sections_returns_empty_list(self, mock_fitz):
-        from enforce.pdf_reader import get_section_start_pages
+        from earlyz.enforce.pdf_reader import get_section_start_pages
 
         mock_doc = _mock_pdf_doc({}, page_count=5)
         mock_fitz.open.return_value = mock_doc
@@ -142,10 +142,10 @@ class TestGetSectionStartPages:
         result = get_section_start_pages(Path("fake.pdf"), [])
         assert result == []
 
-    @patch("enforce.pdf_reader.fitz")
+    @patch("earlyz.enforce.pdf_reader.fitz")
     def test_y0_70_matches_with_page_text(self, mock_fitz):
         """y0=70 matches via page-level normalized text."""
-        from enforce.pdf_reader import get_section_start_pages
+        from earlyz.enforce.pdf_reader import get_section_start_pages
 
         mock_doc = _mock_pdf_doc({
             0: [_make_text_block(y0=70, text="绪论")],
@@ -155,10 +155,10 @@ class TestGetSectionStartPages:
         result = get_section_start_pages(Path("fake.pdf"), ["绪论"])
         assert result == [1]
 
-    @patch("enforce.pdf_reader.fitz")
+    @patch("earlyz.enforce.pdf_reader.fitz")
     def test_y0_100_matches_with_page_text(self, mock_fitz):
         """y0=100 matches via page-level normalized text."""
-        from enforce.pdf_reader import get_section_start_pages
+        from earlyz.enforce.pdf_reader import get_section_start_pages
 
         mock_doc = _mock_pdf_doc({
             0: [_make_text_block(y0=100, text="绪论")],
@@ -168,9 +168,9 @@ class TestGetSectionStartPages:
         result = get_section_start_pages(Path("fake.pdf"), ["绪论"])
         assert result == [1]
 
-    @patch("enforce.pdf_reader.fitz")
+    @patch("earlyz.enforce.pdf_reader.fitz")
     def test_doc_close_is_called(self, mock_fitz):
-        from enforce.pdf_reader import get_section_start_pages
+        from earlyz.enforce.pdf_reader import get_section_start_pages
 
         mock_doc = _mock_pdf_doc({
             0: [],
@@ -180,9 +180,9 @@ class TestGetSectionStartPages:
         get_section_start_pages(Path("fake.pdf"), ["绪论"])
         mock_doc.close.assert_called_once()
 
-    @patch("enforce.pdf_reader.fitz")
+    @patch("earlyz.enforce.pdf_reader.fitz")
     def test_mixed_found_and_not_found(self, mock_fitz):
-        from enforce.pdf_reader import get_section_start_pages
+        from earlyz.enforce.pdf_reader import get_section_start_pages
 
         mock_doc = _mock_pdf_doc({
             0: [_make_text_block(y0=90, text="封面")],

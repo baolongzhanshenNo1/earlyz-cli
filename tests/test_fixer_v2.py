@@ -1,4 +1,4 @@
-"""Unit tests for pipeline/fixer_v2.py — diagnostic verifier."""
+"""Unit tests for earlyz.engine.fixer — diagnostic verifier."""
 import tempfile
 import zipfile
 from pathlib import Path
@@ -7,7 +7,7 @@ import pytest
 from docx import Document
 from lxml import etree
 
-from pipeline.fixer_v2 import (
+from earlyz.engine.fixer import (
     diagnose,
     FixerDiagnostic,
     _VERIFIERS,
@@ -163,7 +163,7 @@ class TestFixerDiagnostic:
 
 class TestVerifierRegistry:
     def test_all_actions_have_verifiers(self):
-        from pipeline.writer_v2 import _ACTION_HANDLERS
+        from earlyz.engine.writer import _ACTION_HANDLERS
         writer_actions = set(_ACTION_HANDLERS.keys())
         fixer_verifiers = set(_VERIFIERS.keys())
         missing = writer_actions - fixer_verifiers
@@ -187,7 +187,7 @@ class TestDiagnoseMatching:
 
     def test_correct_sectpr_type_passes(self, temp_docx):
         # First set it
-        from pipeline.writer_v2 import apply_fixes
+        from earlyz.engine.writer import apply_fixes
         plan = [{
             'action': 'set_sectpr_type',
             'params': {'section_index': 0, 'val': 'nextPage'},
@@ -222,7 +222,7 @@ class TestDiagnoseMatching:
 class TestDiagnoseHeaderFont:
 
     def test_matching_header_font_passes(self, temp_docx_with_header):
-        from pipeline.writer_v2 import apply_fixes
+        from earlyz.engine.writer import apply_fixes
         plan = [{
             'action': 'set_header_font',
             'params': {
@@ -270,7 +270,7 @@ class TestDiagnoseHeaderFont:
 class TestDiagnosePageNumber:
 
     def test_matching_page_number_passes(self, temp_docx_with_footer):
-        from pipeline.writer_v2 import apply_fixes
+        from earlyz.engine.writer import apply_fixes
         plan = [{
             'action': 'add_page_number',
             'params': {
@@ -301,7 +301,7 @@ class TestDiagnosePageNumber:
         assert any('MISSING_PAGE_NUMBER' in i.code for i in issues)
 
     def test_wrong_prefix_detected(self, temp_docx_with_footer):
-        from pipeline.writer_v2 import apply_fixes
+        from earlyz.engine.writer import apply_fixes
         # Apply one format
         plan_apply = [{
             'action': 'add_page_number',
@@ -337,7 +337,7 @@ class TestDiagnosePageNumber:
 class TestDiagnoseStyle:
 
     def test_matching_style_passes(self, temp_docx):
-        from pipeline.writer_v2 import apply_fixes
+        from earlyz.engine.writer import apply_fixes
         # Find existing style ID
         with zipfile.ZipFile(temp_docx, 'r') as z:
             root = etree.fromstring(z.read('word/styles.xml'))
@@ -373,7 +373,7 @@ class TestDiagnoseStyle:
         assert any('STYLE_NOT_APPLIED' in i.code for i in issues)
 
     def test_mismatched_font_ascii_detected(self, temp_docx):
-        from pipeline.writer_v2 import apply_fixes
+        from earlyz.engine.writer import apply_fixes
         with zipfile.ZipFile(temp_docx, 'r') as z:
             root = etree.fromstring(z.read('word/styles.xml'))
             for s in root.iter(f'{{{W}}}style'):
