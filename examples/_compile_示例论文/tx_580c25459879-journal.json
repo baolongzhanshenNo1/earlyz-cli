@@ -1,0 +1,815 @@
+{
+  "transaction_id": "tx_580c25459879",
+  "plan_id": "plan:doc:示例论文",
+  "source": "examples\\示例论文.docx",
+  "status": "applied",
+  "actions": [
+    {
+      "index": 0,
+      "action": "set_paragraph_format",
+      "params": {
+        "selector": {
+          "semantic_role": "body"
+        },
+        "properties": {
+          "jc": "both",
+          "line": 276,
+          "line_rule": "auto",
+          "font_size_pt": 10.5,
+          "spacing_after": 120
+        },
+        "_resolved_paragraphs": [
+          {
+            "fingerprint": "1cb3aca4e209ace093aa",
+            "occurrence": 0,
+            "index": 2
+          },
+          {
+            "fingerprint": "6ce96a5c9d4215c1718f",
+            "occurrence": 0,
+            "index": 4
+          },
+          {
+            "fingerprint": "97325e7a8927fe3a9be1",
+            "occurrence": 0,
+            "index": 6
+          }
+        ]
+      },
+      "status": "ok",
+      "before_hash": "14d7dc458587d3aeb71abcf9f6b06c25f6565f60",
+      "after_hash": "178f07eeec222920f4b3cd9e128de2815cf35056",
+      "error": null
+    },
+    {
+      "index": 1,
+      "action": "set_paragraph_format",
+      "params": {
+        "selector": {
+          "semantic_role": "heading1"
+        },
+        "properties": {
+          "font_size_pt": 13.0,
+          "jc": "left",
+          "line": 240,
+          "line_rule": "auto"
+        },
+        "_resolved_paragraphs": [
+          {
+            "fingerprint": "7fec2c8045bdb8ff2ae3",
+            "occurrence": 0,
+            "index": 1
+          },
+          {
+            "fingerprint": "6dd200eee611909bc50d",
+            "occurrence": 0,
+            "index": 5
+          }
+        ]
+      },
+      "status": "ok",
+      "before_hash": "178f07eeec222920f4b3cd9e128de2815cf35056",
+      "after_hash": "7f20ac1b4fee8ec44665f1f484a23080b366aedc",
+      "error": null
+    },
+    {
+      "index": 2,
+      "action": "set_paragraph_format",
+      "params": {
+        "selector": {
+          "semantic_role": "heading2"
+        },
+        "properties": {
+          "font_size_pt": 10.5,
+          "jc": "left",
+          "line": 240,
+          "line_rule": "auto"
+        },
+        "_resolved_paragraphs": [
+          {
+            "fingerprint": "2e41ecb95811084d184c",
+            "occurrence": 0,
+            "index": 3
+          }
+        ]
+      },
+      "status": "ok",
+      "before_hash": "7f20ac1b4fee8ec44665f1f484a23080b366aedc",
+      "after_hash": "e819e51fb55bdca1e5528f0118e9de6a64c901b9",
+      "error": null
+    },
+    {
+      "index": 3,
+      "action": "set_page_margins_all",
+      "params": {
+        "properties": {
+          "top": 1580,
+          "bottom": 1020,
+          "left": 1300,
+          "right": 1300
+        }
+      },
+      "status": "ok",
+      "before_hash": "e819e51fb55bdca1e5528f0118e9de6a64c901b9",
+      "after_hash": "4d99f3c4c3901ee161062bab3db78a3139c2ecc0",
+      "error": null
+    },
+    {
+      "index": 4,
+      "action": "strip_instruction_paragraphs",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "5f98fe3940661ff46a6f2300d02555d56d2bf2b4",
+      "after_hash": "5f98fe3940661ff46a6f2300d02555d56d2bf2b4",
+      "error": null,
+      "info": {
+        "ok": true,
+        "changed": false,
+        "removed": 0
+      }
+    },
+    {
+      "index": 5,
+      "action": "normalize_footer_parts",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "5f98fe3940661ff46a6f2300d02555d56d2bf2b4",
+      "after_hash": "5f98fe3940661ff46a6f2300d02555d56d2bf2b4",
+      "error": null,
+      "info": {
+        "changed": false,
+        "footers_fixed": 0
+      }
+    },
+    {
+      "index": 6,
+      "action": "ensure_footer_parts",
+      "params": {
+        "format": "{PAGE}",
+        "alignment": "center",
+        "skip_first": true
+      },
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "5f98fe3940661ff46a6f2300d02555d56d2bf2b4",
+      "after_hash": "c18d8d523a9ec2694e18b31b885a513b364e294b",
+      "error": null,
+      "info": {
+        "ok": true,
+        "created": 1,
+        "bound_sections": 1,
+        "parts": [
+          "word/footer1.xml"
+        ]
+      }
+    },
+    {
+      "index": 7,
+      "action": "repair_section_references",
+      "params": {
+        "header_format": {},
+        "sections": [
+          {
+            "index": 0,
+            "fmt": null,
+            "start": null,
+            "start_text": "示例论文题名（模板样式行）",
+            "cols_num": 1,
+            "cols_space": 720,
+            "cols_equal": true,
+            "col_widths": [
+              9640
+            ],
+            "page_content": 9640,
+            "pg_w": 12240,
+            "pg_h": 15840,
+            "sect_type": null,
+            "pg_mar": {
+              "top": 1580,
+              "right": 1300,
+              "bottom": 1020,
+              "left": 1300,
+              "header": 720,
+              "footer": 720,
+              "gutter": 0
+            }
+          }
+        ],
+        "front_matter_roman": false,
+        "identity_headers": [],
+        "body_headers": {}
+      },
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "c18d8d523a9ec2694e18b31b885a513b364e294b",
+      "after_hash": "c18d8d523a9ec2694e18b31b885a513b364e294b",
+      "error": null,
+      "info": {
+        "changed": false,
+        "sections_fixed": 0
+      }
+    },
+    {
+      "index": 8,
+      "action": "ensure_heading_outline",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "c18d8d523a9ec2694e18b31b885a513b364e294b",
+      "after_hash": "c18d8d523a9ec2694e18b31b885a513b364e294b",
+      "error": null,
+      "info": {
+        "changed": false,
+        "headings_outlined": 0
+      }
+    },
+    {
+      "index": 9,
+      "action": "remove_blank_lines_before_headings",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "c18d8d523a9ec2694e18b31b885a513b364e294b",
+      "after_hash": "c18d8d523a9ec2694e18b31b885a513b364e294b",
+      "error": null,
+      "info": {
+        "changed": false,
+        "removed": 0
+      }
+    },
+    {
+      "index": 10,
+      "action": "insert_equation_chapter_breaks",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "c18d8d523a9ec2694e18b31b885a513b364e294b",
+      "after_hash": "c18d8d523a9ec2694e18b31b885a513b364e294b",
+      "error": null,
+      "info": {
+        "changed": false,
+        "mt_numbered": 0,
+        "breaks_inserted": 0,
+        "skipped_no_chapter": 0,
+        "user_managed": false,
+        "mismatch": 0
+      }
+    },
+    {
+      "index": 11,
+      "action": "ensure_section_page_breaks",
+      "params": {
+        "section_break_words": []
+      },
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "c18d8d523a9ec2694e18b31b885a513b364e294b",
+      "after_hash": "c18d8d523a9ec2694e18b31b885a513b364e294b",
+      "error": null,
+      "info": {
+        "changed": false,
+        "page_breaks_added": 0
+      }
+    },
+    {
+      "index": 12,
+      "action": "ensure_update_fields",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "c18d8d523a9ec2694e18b31b885a513b364e294b",
+      "after_hash": "c18d8d523a9ec2694e18b31b885a513b364e294b",
+      "error": null,
+      "info": {
+        "changed": false,
+        "update_fields": false
+      }
+    },
+    {
+      "index": 13,
+      "action": "format_caption_fonts",
+      "params": {
+        "caption": {
+          "latin_bold": false,
+          "figure_east_asia": "宋体"
+        },
+        "equation": {}
+      },
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "c18d8d523a9ec2694e18b31b885a513b364e294b",
+      "after_hash": "c18d8d523a9ec2694e18b31b885a513b364e294b",
+      "error": null,
+      "info": {
+        "changed": false,
+        "figure_captions": 0,
+        "table_captions": 0,
+        "caption_splits": 0,
+        "equations": 0
+      }
+    },
+    {
+      "index": 14,
+      "action": "format_caption_numbers",
+      "params": {
+        "caption": {
+          "latin_bold": false,
+          "figure_east_asia": "宋体"
+        }
+      },
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "c18d8d523a9ec2694e18b31b885a513b364e294b",
+      "after_hash": "c18d8d523a9ec2694e18b31b885a513b364e294b",
+      "error": null,
+      "info": {
+        "changed": false,
+        "captions_fixed": 0
+      }
+    },
+    {
+      "index": 15,
+      "action": "normalize_table_caption_block",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "c18d8d523a9ec2694e18b31b885a513b364e294b",
+      "after_hash": "c18d8d523a9ec2694e18b31b885a513b364e294b",
+      "error": null,
+      "info": {
+        "changed": false,
+        "captions": 0
+      }
+    },
+    {
+      "index": 16,
+      "action": "create_caption_cross_refs",
+      "params": {},
+      "phase": "structural",
+      "status": "failed",
+      "before_hash": "c18d8d523a9ec2694e18b31b885a513b364e294b",
+      "after_hash": "c18d8d523a9ec2694e18b31b885a513b364e294b",
+      "error": "verifier returned False",
+      "info": {
+        "ok": true,
+        "changed": false,
+        "bookmarks": 0,
+        "refs": 0
+      }
+    },
+    {
+      "index": 17,
+      "action": "apply_section_columns",
+      "params": {
+        "body_cols": {
+          "index": 0,
+          "fmt": null,
+          "start": null,
+          "start_text": "示例论文题名（模板样式行）",
+          "cols_num": 1,
+          "cols_space": 720,
+          "cols_equal": true,
+          "col_widths": [
+            9640
+          ],
+          "page_content": 9640,
+          "pg_w": 12240,
+          "pg_h": 15840,
+          "sect_type": null,
+          "pg_mar": {
+            "top": 1580,
+            "right": 1300,
+            "bottom": 1020,
+            "left": 1300,
+            "header": 720,
+            "footer": 720,
+            "gutter": 0
+          }
+        },
+        "front_cols": {
+          "index": 0,
+          "fmt": null,
+          "start": null,
+          "start_text": "示例论文题名（模板样式行）",
+          "cols_num": 1,
+          "cols_space": 720,
+          "cols_equal": true,
+          "col_widths": [
+            9640
+          ],
+          "page_content": 9640,
+          "pg_w": 12240,
+          "pg_h": 15840,
+          "sect_type": null,
+          "pg_mar": {
+            "top": 1580,
+            "right": 1300,
+            "bottom": 1020,
+            "left": 1300,
+            "header": 720,
+            "footer": 720,
+            "gutter": 0
+          }
+        },
+        "identity_headers": [],
+        "body_section_anchor": "",
+        "body_section_anchor_kind": "",
+        "front_tokens": [
+          "示例论文题名",
+          "引言",
+          "模板正文样例段落",
+          "研究背景",
+          "模板二级标题下的正文样例",
+          "方法",
+          "模板第二个正文段落"
+        ],
+        "section_plan": [
+          {
+            "index": 0,
+            "fmt": null,
+            "start": null,
+            "start_text": "示例论文题名（模板样式行）",
+            "cols_num": 1,
+            "cols_space": 720,
+            "cols_equal": true,
+            "col_widths": [
+              9640
+            ],
+            "page_content": 9640,
+            "pg_w": 12240,
+            "pg_h": 15840,
+            "sect_type": null,
+            "pg_mar": {
+              "top": 1580,
+              "right": 1300,
+              "bottom": 1020,
+              "left": 1300,
+              "header": 720,
+              "footer": 720,
+              "gutter": 0
+            },
+            "token": "示例论文题名",
+            "kind": "token"
+          }
+        ]
+      },
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "c18d8d523a9ec2694e18b31b885a513b364e294b",
+      "after_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "error": null,
+      "info": {
+        "changed": true,
+        "sections": 1,
+        "split": false,
+        "extra_splits": 0
+      }
+    },
+    {
+      "index": 18,
+      "action": "fit_tables_to_page",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "after_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "error": null,
+      "info": {
+        "ok": true,
+        "changed": false,
+        "tables_capped": 0
+      }
+    },
+    {
+      "index": 19,
+      "action": "fit_tables_to_page",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "after_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "error": null,
+      "info": {
+        "ok": true,
+        "changed": false,
+        "tables_capped": 0
+      }
+    },
+    {
+      "index": 20,
+      "action": "normalize_table_widths",
+      "params": {
+        "table_width": {}
+      },
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "after_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "error": null,
+      "info": {
+        "changed": false,
+        "skipped": "no template table_width"
+      }
+    },
+    {
+      "index": 21,
+      "action": "format_table_cells",
+      "params": {
+        "table_cells": {}
+      },
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "after_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "error": null,
+      "info": {
+        "changed": false,
+        "cells_fixed": 0,
+        "skipped": "no template table_cells"
+      }
+    },
+    {
+      "index": 22,
+      "action": "apply_table_borders",
+      "params": {
+        "table_borders": {}
+      },
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "after_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "error": null,
+      "info": {
+        "changed": false,
+        "tables": 0,
+        "skipped": "no template table_borders"
+      }
+    },
+    {
+      "index": 23,
+      "action": "keep_table_together",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "after_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "error": null,
+      "info": {
+        "changed": false,
+        "tables": 0,
+        "kept_together": 0,
+        "splittable": 0,
+        "headers_marked": 0,
+        "default_line": 360
+      }
+    },
+    {
+      "index": 24,
+      "action": "center_form_table_cells",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "after_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "error": null,
+      "info": {
+        "changed": false,
+        "tables": 0
+      }
+    },
+    {
+      "index": 25,
+      "action": "toggle_tex_equations",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "after_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "error": null,
+      "info": {
+        "changed": false,
+        "display_converted": 0,
+        "inline_converted": 0
+      }
+    },
+    {
+      "index": 26,
+      "action": "normalize_equation_paragraphs",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "after_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "error": null,
+      "info": {
+        "changed": false,
+        "equations_seen": 0,
+        "plain_seen": 0,
+        "indent_cleared": 0,
+        "centered": 0,
+        "line_spacing_unfixed": 0,
+        "fonts_set": 0,
+        "numbers_tabbed": 0,
+        "tab_stops_fixed": 0,
+        "lead_tabs": 0,
+        "shrunk": 0,
+        "overflow_after_floor": 0,
+        "ole_skipped": 0,
+        "no_size_skipped": 0
+      }
+    },
+    {
+      "index": 27,
+      "action": "fit_media_to_page",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "after_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "error": null,
+      "info": {
+        "changed": false,
+        "resized": 0
+      }
+    },
+    {
+      "index": 28,
+      "action": "normalize_figure_block",
+      "params": {
+        "figure_width": {}
+      },
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "after_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "error": null,
+      "info": {
+        "changed": false,
+        "figures": 0,
+        "touched": 0
+      }
+    },
+    {
+      "index": 29,
+      "action": "normalize_cjk_punctuation",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "after_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "error": null,
+      "info": {
+        "ok": true,
+        "changed": 0,
+        "converted": 0,
+        "kept_total": 0,
+        "note": "未发现可安全归一的半角标点（保护区与保守项均未动）"
+      }
+    },
+    {
+      "index": 30,
+      "action": "refresh_page_fields",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "after_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "error": null,
+      "info": {
+        "changed": false,
+        "applied": 0,
+        "skipped": false,
+        "error": null,
+        "update_fields": false
+      }
+    },
+    {
+      "index": 31,
+      "action": "polish_toc_entries",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "after_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "error": null,
+      "info": {
+        "changed": false,
+        "entries": 0
+      }
+    },
+    {
+      "index": 32,
+      "action": "split_section_parts",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "after_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "error": null,
+      "info": {
+        "ok": true,
+        "cloned": 0,
+        "dropped": 0,
+        "changed": false
+      }
+    },
+    {
+      "index": 33,
+      "action": "strip_cover_header_text",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "after_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "error": null,
+      "info": {
+        "ok": true,
+        "changed": false,
+        "cleared_parts": 0
+      }
+    },
+    {
+      "index": 34,
+      "action": "normalize_front_matter",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "after_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "error": null,
+      "info": {
+        "ok": true,
+        "changed": false,
+        "skipped": "no_role_sections"
+      }
+    },
+    {
+      "index": 35,
+      "action": "reconcile_numbering_refs",
+      "params": {
+        "template": "examples\\示例模板.docx"
+      },
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "after_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "error": null,
+      "info": {
+        "ok": true,
+        "changed": false,
+        "imported": 0
+      }
+    },
+    {
+      "index": 36,
+      "action": "suppress_duplicate_heading_numbers",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "after_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "error": null,
+      "info": {
+        "ok": true,
+        "changed": false,
+        "suppressed": 0
+      }
+    },
+    {
+      "index": 37,
+      "action": "clear_table_cell_outline",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "after_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "error": null,
+      "info": {
+        "ok": true,
+        "changed": false,
+        "cleared": 0,
+        "fused": false
+      }
+    },
+    {
+      "index": 38,
+      "action": "ensure_toc_section_break",
+      "params": {},
+      "phase": "structural",
+      "status": "ok",
+      "before_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "after_hash": "ed3c614e3ee17a882cd4e93bff123af093f650b9",
+      "error": null,
+      "info": {
+        "changed": false,
+        "skipped": "no_toc"
+      }
+    }
+  ],
+  "rollback": {
+    "needed": false,
+    "restored": false
+  }
+}

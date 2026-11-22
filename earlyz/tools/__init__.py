@@ -1,4 +1,4 @@
-"""EarlyZ 工具注册。"""
+"""早睡 (EarlyZ) 工具注册。"""
 
 from __future__ import annotations
 from earlyz.tools.base import EarlyZTool

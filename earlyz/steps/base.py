@@ -143,15 +143,58 @@ class PageNumberStep(PipelineStep):
                 },
             })
 
-        # footer references
+        # footer references——前置节（封面/郑重声明/版权授权，无 governing H1）
+        # 不加页码；已有 footerReference 的也移除（验收：声明/授权页不应有页码）
         with zipfile.ZipFile(target, "r") as z:
             root = etree.fromstring(z.read("word/document.xml"))
-        for i, sp in enumerate(root.iter(f"{{{W}}}sectPr")):
+        body = root.find(f"{{{W}}}body")
+
+        # 复用 H1 收集（sdt 全段遍历 + 排除目录条目——与 HeaderTextStep 同规则）
+        h1_positions = []
+        for child_idx, child in enumerate(body):
+            paras = [child] if child.tag == f"{{{W}}}p" else []
+            if child.tag == f"{{{W}}}sdt":
+                sc = child.find(f"{{{W}}}sdtContent")
+                if sc is not None:
+                    paras = sc.findall(f"{{{W}}}p")
+            for para in paras:
+                txt = ''.join(t.text or '' for t in para.iter(f"{{{W}}}t")).strip()
+                if not txt:
+                    continue
+                norm = re.sub(r'\s+', '', txt)
+                if self.h1_pat.match(norm) and not re.search(r'[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩIVXLCDM\d]+$', norm):
+                    h1_positions.append((child_idx, txt))
+
+        sects_in_order = []
+        for child_idx, child in enumerate(body):
+            sp = None
+            if child.tag == f"{{{W}}}sectPr":
+                sp = child
+            elif child.tag == f"{{{W}}}p":
+                pp = child.find(f"{{{W}}}pPr")
+                if pp is not None:
+                    sp = pp.find(f"{{{W}}}sectPr")
+            if sp is not None:
+                sects_in_order.append((child_idx, sp))
+
+        for si, (child_idx, sp) in enumerate(sects_in_order):
+            governing = None
+            for h1_idx, _h1_txt in reversed(h1_positions):
+                if h1_idx < child_idx:
+                    governing = True
+                    break
             fref = sp.find(f"{{{W}}}footerReference")
-            if fref is None:
+            if governing is None:
+                # 前置节（封面/声明/授权）：移除页脚引用，保证无页码
+                if fref is not None:
+                    plan.append({
+                        "action": "clear_section_footers",
+                        "params": {"section_index": si},
+                    })
+            elif fref is None:
                 plan.append({
                     "action": "add_footer_reference",
-                    "params": {"section_index": i},
+                    "params": {"section_index": si},
                 })
 
         return plan
@@ -202,7 +245,7 @@ class HeaderTextStep(PipelineStep):
         self.normalizer = normalizer or _default_normalizer
 
     def run(self, target: Path, spec: dict) -> list[dict]:
-        from earlyz.pipeline.agent import EarlyZAgent
+        from pipeline.agent import EarlyZAgent
 
         body_rules = spec.get("body", {})
         font_east = body_rules.get("font_east", "宋体")
@@ -215,17 +258,26 @@ class HeaderTextStep(PipelineStep):
         # 收集 H1
         h1_positions = []
         for i, child in enumerate(body):
-            para = None
+            paras = []
             if child.tag == f"{{{W}}}p":
-                para = child
+                paras = [child]
             elif child.tag == f"{{{W}}}sdt":
                 sc = child.find(f"{{{W}}}sdtContent")
                 if sc is not None:
-                    para = sc.find(f"{{{W}}}p")
-            if para is not None:
+                    # 遍历 sdtContent 全部段落（历史 bug：只取第一个 p，
+                    # 目录标题常在 sdt 第 2+ 段导致漏匹配 → 目录节继承前一节页眉）
+                    paras = sc.findall(f"{{{W}}}p")
+            for para in paras:
                 txt = ''.join(t.text or '' for t in para.iter(f"{{{W}}}t")).strip()
-                if txt and self.h1_pat.match(re.sub(r'\s+', '', txt)):
-                    h1_positions.append((i, txt))
+                if not txt:
+                    continue
+                norm = re.sub(r'\s+', '', txt)
+                if not self.h1_pat.match(norm):
+                    continue
+                # 排除目录条目：标题后跟页码/罗马数字（如"致谢I""1.1研究背景1"）
+                if re.search(r'[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩIVXLCDM\d]+$', norm):
+                    continue
+                h1_positions.append((i, txt))
 
         # 收集 sectPr
         sects_in_order = []
@@ -252,6 +304,13 @@ class HeaderTextStep(PipelineStep):
                 norm = re.sub(r'\s+', '', heading_text)
                 if norm in self.front_skip:
                     continue
+                # 页眉文字截断：标题段可能含正文（如"结论与展望。总结研究成果…"），
+                # 只取标题核心（第一个句号/逗号前，上限 15 字），避免正文混入页眉
+                trimmed = re.split(r'[。，,；;：]', heading_text, 1)[0].strip()
+                if len(trimmed) > 15:
+                    trimmed = trimmed[:15]
+                if trimmed:
+                    heading_text = trimmed
                 header_text = self.normalizer(heading_text)
                 section_headers.append({
                     'sectpr_index': si,

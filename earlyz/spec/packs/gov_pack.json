@@ -1,0 +1,63 @@
+{
+  "name": "公文排版规范包",
+  "domain": "gov",
+  "description": "党政机关公文格式（GB/T 9704-2012）：标题二号小标宋居中、正文三号仿宋、一级标题黑体、标准页边距",
+  "rules": [
+    {
+      "rule_id": "rule:gov.doc_defaults",
+      "selector": {"document_default": true},
+      "expected": {"font_ascii": "Times New Roman", "font_east_asia": "仿宋_GB2312", "font_size_pt": 16.0},
+      "severity": "error", "auto_fix": true, "risk_ceiling": "R2",
+      "provenance": {"source": "builtin", "detail": "公文默认：正文三号仿宋_GB2312（16pt）"},
+      "confidence": 0.9
+    },
+    {
+      "rule_id": "rule:gov.title",
+      "selector": {"semantic_role": "heading1"},
+      "expected": {"jc": "center", "bold": true, "font_size_pt": 22.0, "font_east_asia": "小标宋体"},
+      "severity": "error", "auto_fix": true, "risk_ceiling": "R2",
+      "provenance": {"source": "builtin", "detail": "公文标题：二号小标宋体居中（22pt）"},
+      "confidence": 0.9
+    },
+    {
+      "rule_id": "rule:gov.heading1",
+      "selector": {"semantic_role": "heading2"},
+      "expected": {"font_east_asia": "黑体", "font_size_pt": 16.0},
+      "severity": "error", "auto_fix": true, "risk_ceiling": "R2",
+      "provenance": {"source": "builtin", "detail": "一级标题：三号黑体"},
+      "confidence": 0.9
+    },
+    {
+      "rule_id": "rule:gov.heading2",
+      "selector": {"semantic_role": "heading3"},
+      "expected": {"font_east_asia": "楷体_GB2312", "font_size_pt": 16.0},
+      "severity": "warning", "auto_fix": true, "risk_ceiling": "R2",
+      "provenance": {"source": "builtin", "detail": "二级标题：三号楷体_GB2312"},
+      "confidence": 0.85
+    },
+    {
+      "rule_id": "rule:gov.body.jc",
+      "selector": {"semantic_role": "body"},
+      "expected": {"jc": "both"},
+      "severity": "error", "auto_fix": true, "risk_ceiling": "R2",
+      "provenance": {"source": "builtin", "detail": "公文正文两端对齐"},
+      "confidence": 0.95
+    },
+    {
+      "rule_id": "rule:gov.page_margin",
+      "selector": {"document_default": true},
+      "expected": {"top_cm": 3.7, "bottom_cm": 3.5, "left_cm": 2.8, "right_cm": 2.6},
+      "severity": "error", "auto_fix": true, "risk_ceiling": "R2",
+      "provenance": {"source": "builtin", "detail": "GB/T 9704 页边距：上3.7cm 下3.5cm 左2.8cm 右2.6cm"},
+      "confidence": 0.95
+    },
+    {
+      "rule_id": "rule:gov.line_spacing",
+      "selector": {"semantic_role": "body"},
+      "expected": {"line_spacing": 1.5},
+      "severity": "warning", "auto_fix": true, "risk_ceiling": "R2",
+      "provenance": {"source": "builtin", "detail": "公文正文行距一般 1.5 倍"},
+      "confidence": 0.8
+    }
+  ]
+}

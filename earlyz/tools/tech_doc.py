@@ -93,10 +93,10 @@ class TechDocTool(EarlyZTool):
             reconciler = Reconciler(steps)
             fix_plan = reconciler.reconcile(out, spec)
 
-            from earlyz.engine.writer import apply_fixes
+            from pipeline.writer_v2 import apply_fixes
             writer_logs = apply_fixes(fix_plan, out)
 
-            from earlyz.engine.fixer import diagnose, summary
+            from pipeline.fixer_v2 import diagnose, summary
             issues = diagnose(fix_plan, out)
             stats = summary(issues)
 

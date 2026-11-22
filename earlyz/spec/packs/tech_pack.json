@@ -1,0 +1,55 @@
+{
+  "name": "技术文档排版规范包",
+  "domain": "tech",
+  "description": "技术文档/产品说明书通用规范：标题层级、正文宋体、代码块等宽字体、表格统一",
+  "rules": [
+    {
+      "rule_id": "rule:tech.doc_defaults",
+      "selector": {"document_default": true},
+      "expected": {"font_ascii": "Consolas", "font_east_asia": "宋体", "font_size_pt": 10.5},
+      "severity": "error", "auto_fix": true, "risk_ceiling": "R2",
+      "provenance": {"source": "builtin", "detail": "技术文档默认：中文宋体、西文 Consolas、五号（10.5pt）"},
+      "confidence": 0.85
+    },
+    {
+      "rule_id": "rule:tech.heading1",
+      "selector": {"semantic_role": "heading1"},
+      "expected": {"bold": true, "font_size_pt": 16.0, "font_east_asia": "黑体"},
+      "severity": "error", "auto_fix": true, "risk_ceiling": "R2",
+      "provenance": {"source": "builtin", "detail": "技术文档一级标题：三号黑体加粗"},
+      "confidence": 0.9
+    },
+    {
+      "rule_id": "rule:tech.heading2",
+      "selector": {"semantic_role": "heading2"},
+      "expected": {"bold": true, "font_size_pt": 14.0},
+      "severity": "warning", "auto_fix": true, "risk_ceiling": "R2",
+      "provenance": {"source": "builtin", "detail": "技术文档二级标题：四号加粗"},
+      "confidence": 0.85
+    },
+    {
+      "rule_id": "rule:tech.body.jc",
+      "selector": {"semantic_role": "body"},
+      "expected": {"jc": "left"},
+      "severity": "warning", "auto_fix": true, "risk_ceiling": "R2",
+      "provenance": {"source": "builtin", "detail": "技术文档正文左对齐（不强制两端）"},
+      "confidence": 0.8
+    },
+    {
+      "rule_id": "rule:tech.code",
+      "selector": {"semantic_role": "code_block"},
+      "expected": {"font_ascii": "Consolas", "font_east_asia": "宋体"},
+      "severity": "error", "auto_fix": true, "risk_ceiling": "R2",
+      "provenance": {"source": "builtin", "detail": "代码块等宽字体 Consolas"},
+      "confidence": 0.9
+    },
+    {
+      "rule_id": "rule:tech.tbl_border",
+      "selector": {"semantic_role": "table"},
+      "expected": {"border": "single"},
+      "severity": "warning", "auto_fix": true, "risk_ceiling": "R2",
+      "provenance": {"source": "builtin", "detail": "表格统一单线边框"},
+      "confidence": 0.8
+    }
+  ]
+}

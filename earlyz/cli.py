@@ -1,4 +1,4 @@
-"""EarlyZ CLI — 专治 Word 排版疑难杂症。
+"""EarlyZ_Rename_UI CLI — 专治 Word 排版疑难杂症。
 
 用法:
   earlyz format <论文.docx> --spec <规范.docx>  对论文按规范模板排版
@@ -8,19 +8,28 @@
 
 from __future__ import annotations
 
+import sys
+import re
 import shutil
 from pathlib import Path
 
 import click
-from rich import box
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
 from rich.text import Text
+from rich import box
+
+# ---------------------------------------------------------------------------
+# 确保项目模块可导入
+# ---------------------------------------------------------------------------
+_project = Path(__file__).resolve().parent.parent
+if str(_project) not in sys.path:
+    sys.path.insert(0, str(_project))
 
 console = Console()
 
-BRAND = Text("EarlyZ — 专治 Word 排版疑难杂症", style="bold cyan")
+BRAND = Text("EarlyZ_Rename_UI — 专治 Word 排版疑难杂症", style="bold cyan")
 
 # ---------------------------------------------------------------------------
 # 自动检测 LibreOffice
@@ -49,11 +58,11 @@ def _find_libreoffice() -> Path | None:
 # ═══════════════════════════════════════════════
 
 @click.group()
-@click.version_option(version="2.0.0", prog_name="earlyz", message="EarlyZ %(version)s")
+@click.version_option(version="2.0.0", prog_name="earlyz", message="EarlyZ_Rename_UI %(version)s")
 def cli():
-    """EarlyZ — 专治 Word 排版疑难杂症。
+    """EarlyZ_Rename_UI — 专治 Word 排版疑难杂症。
 
-    本地离线、深度 OOXML、规范模板驱动。
+    本地离线、深度 OOXML、AI Agent 实时协作。
     """
 
 
@@ -181,7 +190,7 @@ def enforce_cmd(docx, output, libreoffice, sections):
             docx_output=output_path,
             odd_page_sections=odd_sections,
         )
-        enforce_odd_pages(config)
+        result = enforce_odd_pages(config)
 
     console.print(f"  [green]✅ 奇偶页强制完成[/green] → {output_path}")
 
@@ -194,9 +203,10 @@ def enforce_cmd(docx, output, libreoffice, sections):
 @click.argument("spec_docx", type=click.Path(exists=True, dir_okay=False))
 @click.option("--output", "-o", default=None, help="输出 YAML 路径（默认: <spec>_template.yaml）")
 def analyze_cmd(spec_docx, output):
-    """提取规范模板的格式规则（字体/边距/页眉/页码）→ YAML。
+    """提取规范模板的格式规则（标题/正文/页眉/页脚/页面设置）→ YAML。
 
-    生成的结构化 YAML 可直接作为 `format` 命令的 --spec 参数。
+    规则来自仓库内现役 SpecReader v2（earlyz.engine.spec_reader.read_spec_v2）；
+    `format` 命令直接吃 .docx 规范模板，本命令产物用于审阅/比对/留档。
     """
     spec_path = Path(spec_docx)
     if output is None:
@@ -208,26 +218,31 @@ def analyze_cmd(spec_docx, output):
     console.print()
 
     with console.status(f"[cyan]分析规范模板: {spec_path.name}…", spinner="dots"):
+        # 仓库内现役实现（EZI-0003：不再走仓库外归档的 generator.template_analyzer）
+        from earlyz.engine.spec_reader import read_spec_v2
+
         import yaml
 
-        from earlyz.analyzer.template_analyzer import analyze_template
-
-        data = analyze_template(str(spec_path))
+        data = read_spec_v2(spec_path)
 
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(yaml.dump(data, allow_unicode=True, default_flow_style=False),
                                encoding="utf-8")
 
     # 摘要
-    font_count = len(data.get("fonts", {})) if isinstance(data, dict) else 0
+    rule_groups = len(data) if isinstance(data, dict) else 0
     page = data.get("page", {}) if isinstance(data, dict) else {}
 
     console.print(f"  [green]✅ 分析完成[/green] → {output_path}")
-    console.print(f"  [dim]  字体规则: {font_count} 条[/dim]")
+    console.print(f"  [dim]  规则组: {rule_groups} 条[/dim]")
     if page:
-        margins = page.get("margins", {})
-        if margins:
-            console.print(f"  [dim]  页面设置: A4, 上{margins.get('top','?')} 下{margins.get('bottom','?')} 左{margins.get('left','?')} 右{margins.get('right','?')}[/dim]")
+        margins = page
+        console.print(f"  [dim]  页面设置: 上{margins.get('top','?')} 下{margins.get('bottom','?')} 左{margins.get('left','?')} 右{margins.get('right','?')} (twips)[/dim]")
+
+
+def _spec_to_dict(spec) -> dict:
+    """SpecReader 结果 → 纯 dict（保留以防旧版调用，已不用）。"""
+    return {"fonts": {}, "page": {}}
 
 
 # ═══════════════════════════════════════════════

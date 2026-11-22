@@ -19,7 +19,7 @@ dependencies = [
     "python-docx",
     "PyYAML",
     "lxml",
-    "pymupdf",
+    "pypdfium2==5.13.0",
     "click",
     "rich",
     "httpx",

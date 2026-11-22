@@ -1,5 +1,7 @@
 """
 Config dataclass for odd-page enforcement.
+
+（EZI-0003：从仓库外归档目录的 enforce/config.py 原样迁入。）
 """
 from dataclasses import dataclass, field
 from pathlib import Path

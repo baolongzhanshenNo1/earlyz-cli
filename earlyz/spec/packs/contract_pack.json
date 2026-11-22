@@ -1,0 +1,135 @@
+{
+  "name": "合同排版规范包",
+  "domain": "contract",
+  "description": "商业合同通用规范：条款层级编号、条款标题黑体、正文宋体小四、首行缩进",
+  "rules": [
+    {
+      "rule_id": "rule:contract.doc_defaults",
+      "selector": {
+        "document_default": true
+      },
+      "expected": {
+        "font_ascii": "Times New Roman",
+        "font_east_asia": "宋体",
+        "font_size_pt": 12.0
+      },
+      "severity": "error",
+      "auto_fix": true,
+      "risk_ceiling": "R2",
+      "provenance": {
+        "source": "builtin",
+        "detail": "合同默认字体：中文宋体、西文 Times New Roman、小四"
+      },
+      "confidence": 0.9
+    },
+    {
+      "rule_id": "rule:contract.body.jc",
+      "selector": {
+        "semantic_role": "body"
+      },
+      "expected": {
+        "jc": "both"
+      },
+      "severity": "error",
+      "auto_fix": true,
+      "risk_ceiling": "R2",
+      "provenance": {
+        "source": "builtin",
+        "detail": "合同正文两端对齐"
+      },
+      "confidence": 0.95
+    },
+    {
+      "rule_id": "rule:contract.body.indent",
+      "selector": {
+        "semantic_role": "body"
+      },
+      "expected": {
+        "first_line_indent_chars": 200
+      },
+      "severity": "warning",
+      "auto_fix": true,
+      "risk_ceiling": "R2",
+      "provenance": {
+        "source": "builtin",
+        "detail": "合同正文首行缩进 2 字符"
+      },
+      "confidence": 0.85
+    },
+    {
+      "rule_id": "rule:contract.clause",
+      "selector": {
+        "semantic_role": "heading2"
+      },
+      "expected": {
+        "jc": "left",
+        "bold": true
+      },
+      "severity": "error",
+      "auto_fix": true,
+      "risk_ceiling": "R2",
+      "provenance": {
+        "source": "builtin",
+        "detail": "合同条款标题（第X条）加粗左对齐"
+      },
+      "confidence": 0.9
+    },
+    {
+      "rule_id": "rule:contract.list.level1",
+      "selector": {
+        "abstract_num_id": 0,
+        "level": 0
+      },
+      "expected": {
+        "num_fmt": "decimal",
+        "lvl_text": "%1."
+      },
+      "severity": "error",
+      "auto_fix": true,
+      "risk_ceiling": "R2",
+      "provenance": {
+        "source": "builtin",
+        "detail": "条款一级编号 1. 2. 3."
+      },
+      "confidence": 0.9
+    },
+    {
+      "rule_id": "rule:contract.list.level2",
+      "selector": {
+        "abstract_num_id": 0,
+        "level": 1
+      },
+      "expected": {
+        "num_fmt": "decimal",
+        "lvl_text": "%1.%2"
+      },
+      "severity": "error",
+      "auto_fix": true,
+      "risk_ceiling": "R2",
+      "provenance": {
+        "source": "builtin",
+        "detail": "条款二级编号 1.1 1.2"
+      },
+      "confidence": 0.9
+    },
+    {
+      "rule_id": "rule:contract.list.level3",
+      "selector": {
+        "abstract_num_id": 0,
+        "level": 2
+      },
+      "expected": {
+        "num_fmt": "decimal",
+        "lvl_text": "%1.%2.%3"
+      },
+      "severity": "error",
+      "auto_fix": true,
+      "risk_ceiling": "R2",
+      "provenance": {
+        "source": "builtin",
+        "detail": "条款三级编号 1.1.1"
+      },
+      "confidence": 0.9
+    }
+  ]
+}

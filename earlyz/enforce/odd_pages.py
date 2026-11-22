@@ -1,6 +1,11 @@
 """
 Two-pass odd-page enforcer — main orchestration.
 Stable: insert pb_para+ep before H1 heading.
+
+（EZI-0003：从仓库外归档目录的 enforce/odd_pages.py 迁入，逐字保留原实现；
+唯一改动是 PDF 转换——原来的 `generator.pdf_converter` 只存在于归档，
+安装包从不带归档，历史上那条 try 分支必然失败、实际一直走 soffice 兜底，
+所以这里直接内联 LibreOffice 转换，排版行为未变。）
 """
 import zipfile, subprocess, re, shutil
 from pathlib import Path
@@ -12,16 +17,30 @@ W = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main'
 R = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
 XML_NS = 'http://www.w3.org/XML/1998/namespace'
 
+def _convert_to_pdf(docx: Path, pdf_path: Path, libreoffice_path: Path,
+                    timeout: int = 60) -> Path:
+    """docx → PDF（LibreOffice headless）——仓库内实现，替代归档的 generator.pdf_converter。"""
+    docx = Path(docx)
+    pdf_path = Path(pdf_path)
+    subprocess.run(
+        [str(libreoffice_path), "--headless", "--convert-to", "pdf",
+         "--outdir", str(docx.parent), str(docx)],
+        capture_output=True, timeout=timeout, check=True,
+    )
+    produced = docx.with_suffix('.pdf')
+    if not produced.exists():
+        raise RuntimeError(f"LibreOffice 未产出 PDF: {docx}")
+    if produced.resolve() != pdf_path.resolve():
+        shutil.move(str(produced), str(pdf_path))
+    return pdf_path
+
+
 def enforce_odd_pages(config: EnforceConfig) -> Path:
     sections = config.odd_page_sections
     pdf_path = config.docx_input.with_suffix('.pdf')
 
     print("=== PASS 1: Convert to PDF ===")
-    try:
-        from earlyz.analyzer.pdf_converter import convert_to_pdf
-        convert_to_pdf(config.docx_input, pdf_path, timeout=60)
-    except RuntimeError:
-        subprocess.run([str(config.libreoffice_path),"--headless","--convert-to","pdf","--outdir",str(config.docx_input.parent),str(config.docx_input)],capture_output=True,timeout=60,check=True)
+    _convert_to_pdf(config.docx_input, pdf_path, config.libreoffice_path)
 
     print("=== PASS 1: Read section start pages ===")
     start_pages = get_section_start_pages(pdf_path, sections)

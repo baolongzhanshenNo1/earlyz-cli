@@ -29,6 +29,28 @@
 
 ---
 
+## Quickstart
+
+```bash
+git clone https://github.com/baolongzhanshenNo1/earlyz-cli
+pip install -e .
+python examples/make_examples.py                 # 自制合成示例对（不含任何真实院校/期刊模板）
+earlyz format examples/示例论文.docx --spec examples/示例模板.docx
+python -m pytest -q tests/                        # 140 条引擎行为守卫（合成夹具）
+```
+
+> PDF 渲染走 PDFium（`pypdfium2`，Apache-2.0/BSD-3）——没有 AGPL 依赖。
+
+## 引擎现状（2026-11-22）
+
+排版正确率以**双语料库可判项**计：清洗集 579/579、留出集 388/388，双双 100%。
+开发走 issue 驱动工作流（[workflow-kit](https://github.com/baolongzhanshenNo1/workflow-kit)）：
+每张卡过五层门禁（语法→按改动路径选测试→**摆回即红**→Word 真机视觉→语料对照），
+证据绑定提交指纹。本仓引擎与桌面版同源同步（`scripts/sync_cli_repo.py`）。
+
+
+---
+
 ## ⚡ 快速开始
 
 ```bash

@@ -16,7 +16,6 @@ from pathlib import Path
 from typing import Optional
 
 from earlyz.tools.base import EarlyZTool, ToolResult
-from earlyz.tools.thesis import ThesisTool
 
 
 # ── 条款识别正则 ──

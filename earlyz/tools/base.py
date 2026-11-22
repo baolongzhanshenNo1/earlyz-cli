@@ -1,4 +1,4 @@
-"""EarlyZ 工具基类。
+"""早睡 (EarlyZ) 工具基类。
 
 每个垂直领域能力是一个 EarlyZTool 子类。
 Agent 根据用户意图路由到对应工具，工具调用共享 Format Engine。
@@ -49,7 +49,7 @@ class EarlyZTool(ABC):
     @property
     def supported_extensions(self) -> list[str]:
         """支持的输入文件后缀"""
-        return [".docx"]
+        return [".docx", ".doc"]
 
     @abstractmethod
     def run(self, **kwargs) -> ToolResult:

@@ -76,6 +76,9 @@ def read_spec_v2(spec_path: Path) -> dict:
     rules['footer_format'] = (_extract_footer_format(doc_xml, rels_xml, footer_xmls)
                               if rels_xml is not None and footer_xmls else None)
 
+    # 4. TOC 样式（目录字体/行间距）
+    rules['toc_styles'] = _parse_toc_styles(styles_xml) if styles_xml is not None else {}
+
     return rules
 
 
@@ -662,6 +665,108 @@ def _read_format(pPr, rPr) -> dict:
                 fmt['color'] = cval
 
     return fmt
+
+
+# ═══════════════════════════════════════════════════════════════
+# 5. TOC 样式提取
+# ═══════════════════════════════════════════════════════════════
+
+# TOC 样式 ID → 级别映射（兼容中英文 Word 版本）
+_TOC_STYLE_IDS = {
+    'TOC1': 1, 'TOC 1': 1, 'toc 1': 1,
+    'TOC2': 2, 'TOC 2': 2, 'toc 2': 2,
+    'TOC3': 3, 'TOC 3': 3, 'toc 3': 3,
+}
+
+
+def _parse_toc_styles(styles_xml: bytes) -> dict:
+    """从 styles.xml 读取 TOC1/TOC2/TOC3 的字体与段落格式。
+
+    返回 dict: { 'TOC1': {font_east, font_ascii, font_size_pt, bold, line, lineRule, ...},
+                  'TOC2': {...},
+                  'TOC3': {...},
+                  '_basedOn': {'TOC1': '正文', ...} }
+
+    沿 basedOn 继承链溯源直到顶层，合并各级属性（子孙覆盖祖先）。
+    """
+    root = etree.fromstring(styles_xml)
+    toc_styles: Dict[str, Any] = {}
+    based_on: Dict[str, str] = {}
+
+    # 先建立 id→style 映射(用于继承链溯源)
+    style_map: Dict[str, etree._Element] = {}
+    for style in root.iter(f'{{{W}}}style'):
+        sid = style.get(f'{{{W}}}styleId', '')
+        if sid:
+            style_map[sid] = style
+
+    for style in root.iter(f'{{{W}}}style'):
+        style_id = style.get(f'{{{W}}}styleId', '')
+        name_el = style.find(f'{{{W}}}name')
+        name_val = (name_el.get(f'{{{W}}}val') or '') if name_el is not None else ''
+
+        # 按 styleId 和 name 双重匹配（兼容中英文）
+        level = _TOC_STYLE_IDS.get(style_id) or _TOC_STYLE_IDS.get(name_val)
+        if level is None:
+            continue
+
+        toc_key = f'TOC{level}'
+
+        # 读显式格式
+        pPr = style.find(f'{{{W}}}pPr')
+        rPr = style.find(f'{{{W}}}rPr')
+        fmt = _read_format(pPr, rPr)
+
+        # 记录 basedOn 用于后续继承溯源
+        based = style.find(f'{{{W}}}basedOn')
+        if based is not None:
+            base_val = based.get(f'{{{W}}}val', '')
+            if base_val:
+                based_on[toc_key] = base_val
+
+        # 沿继承链合并祖先属性
+        merged = _merge_style_chain(style_id, style_map, fmt)
+        toc_styles[toc_key] = merged
+
+    if based_on:
+        toc_styles['_basedOn'] = based_on
+
+    return toc_styles
+
+
+def _merge_style_chain(style_id: str, style_map: dict, leaf_fmt: dict) -> dict:
+    """沿 basedOn 链向上溯源，合并属性（子孙覆盖祖先）。"""
+    merged = dict(leaf_fmt)
+    seen = {style_id}
+    current_id = style_id
+
+    for _ in range(10):  # 防止循环链条
+        style = style_map.get(current_id)
+        if style is None:
+            break
+        based = style.find(f'{{{W}}}basedOn')
+        if based is None:
+            break
+        parent_id = based.get(f'{{{W}}}val', '')
+        if not parent_id or parent_id in seen:
+            break
+        seen.add(parent_id)
+
+        parent_style = style_map.get(parent_id)
+        if parent_style is None:
+            break
+        parent_pPr = parent_style.find(f'{{{W}}}pPr')
+        parent_rPr = parent_style.find(f'{{{W}}}rPr')
+        parent_fmt = _read_format(parent_pPr, parent_rPr)
+
+        # 祖先属性只填充叶节点未设的项
+        for k, v in parent_fmt.items():
+            if k not in merged:
+                merged[k] = v
+
+        current_id = parent_id
+
+    return merged
 
 
 # ═══════════════════════════════════════════════════════════════

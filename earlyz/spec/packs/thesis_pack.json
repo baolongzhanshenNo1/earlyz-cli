@@ -1,0 +1,132 @@
+{
+  "name": "论文排版规范包",
+  "domain": "thesis",
+  "description": "高校学位论文通用规范：默认字体、正文两端对齐、标题层级、页边距",
+  "rules": [
+    {
+      "rule_id": "rule:thesis.doc_defaults",
+      "selector": {
+        "document_default": true
+      },
+      "expected": {
+        "font_ascii": "Times New Roman",
+        "font_east_asia": "宋体",
+        "font_size_pt": 12.0
+      },
+      "severity": "error",
+      "auto_fix": true,
+      "risk_ceiling": "R2",
+      "provenance": {
+        "source": "builtin",
+        "detail": "论文默认字体：中文宋体、西文 Times New Roman、小四"
+      },
+      "confidence": 0.9
+    },
+    {
+      "rule_id": "rule:thesis.body.jc",
+      "selector": {
+        "semantic_role": "body"
+      },
+      "expected": {
+        "jc": "both"
+      },
+      "severity": "error",
+      "auto_fix": true,
+      "risk_ceiling": "R2",
+      "provenance": {
+        "source": "builtin",
+        "detail": "正文两端对齐"
+      },
+      "confidence": 0.95
+    },
+    {
+      "rule_id": "rule:thesis.body.first_line_indent",
+      "selector": {
+        "semantic_role": "body"
+      },
+      "expected": {
+        "first_line_indent_chars": 200
+      },
+      "severity": "error",
+      "auto_fix": true,
+      "risk_ceiling": "R2",
+      "provenance": {
+        "source": "builtin",
+        "detail": "正文首行缩进 2 字符"
+      },
+      "confidence": 0.9
+    },
+    {
+      "rule_id": "rule:thesis.body.spacing",
+      "selector": {
+        "semantic_role": "body"
+      },
+      "expected": {
+        "line_spacing": 1.5
+      },
+      "severity": "warning",
+      "auto_fix": true,
+      "risk_ceiling": "R2",
+      "provenance": {
+        "source": "builtin",
+        "detail": "正文 1.5 倍行距"
+      },
+      "confidence": 0.85
+    },
+    {
+      "rule_id": "rule:thesis.heading1",
+      "selector": {
+        "semantic_role": "heading1"
+      },
+      "expected": {
+        "jc": "center",
+        "bold": true
+      },
+      "severity": "error",
+      "auto_fix": true,
+      "risk_ceiling": "R2",
+      "provenance": {
+        "source": "builtin",
+        "detail": "一级标题居中加粗"
+      },
+      "confidence": 0.9
+    },
+    {
+      "rule_id": "rule:thesis.caption",
+      "selector": {
+        "semantic_role": "caption"
+      },
+      "expected": {
+        "jc": "center"
+      },
+      "severity": "error",
+      "auto_fix": true,
+      "risk_ceiling": "R2",
+      "provenance": {
+        "source": "builtin",
+        "detail": "表标题/图标题居中（表 4.1 / 图 4.7 文本模式识别）"
+      },
+      "confidence": 0.9
+    },
+    {
+      "rule_id": "rule:thesis.page_margin",
+      "selector": {
+        "document_default": true
+      },
+      "expected": {
+        "top_cm": 2.54,
+        "bottom_cm": 2.54,
+        "left_cm": 3.17,
+        "right_cm": 3.17
+      },
+      "severity": "warning",
+      "auto_fix": true,
+      "risk_ceiling": "R2",
+      "provenance": {
+        "source": "builtin",
+        "detail": "论文标准页边距（上3.17cm 左右3.17cm 等）"
+      },
+      "confidence": 0.8
+    }
+  ]
+}

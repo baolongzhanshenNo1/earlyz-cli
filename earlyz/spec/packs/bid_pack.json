@@ -1,0 +1,116 @@
+{
+  "name": "标书排版规范包",
+  "domain": "bid",
+  "description": "投标文件通用规范：目录完整、章节标题黑体三号、正文宋体小四、表格统一边框",
+  "rules": [
+    {
+      "rule_id": "rule:bid.doc_defaults",
+      "selector": {
+        "document_default": true
+      },
+      "expected": {
+        "font_ascii": "Times New Roman",
+        "font_east_asia": "宋体",
+        "font_size_pt": 12.0
+      },
+      "severity": "error",
+      "auto_fix": true,
+      "risk_ceiling": "R2",
+      "provenance": {
+        "source": "builtin",
+        "detail": "标书默认字体：中文宋体、西文 Times New Roman、小四"
+      },
+      "confidence": 0.9
+    },
+    {
+      "rule_id": "rule:bid.heading1",
+      "selector": {
+        "semantic_role": "heading1"
+      },
+      "expected": {
+        "jc": "center",
+        "bold": true,
+        "font_size_pt": 16.0,
+        "font_east_asia": "黑体"
+      },
+      "severity": "error",
+      "auto_fix": true,
+      "risk_ceiling": "R2",
+      "provenance": {
+        "source": "builtin",
+        "detail": "标书一级标题：三号黑体居中"
+      },
+      "confidence": 0.9
+    },
+    {
+      "rule_id": "rule:bid.heading2",
+      "selector": {
+        "semantic_role": "heading2"
+      },
+      "expected": {
+        "bold": true,
+        "font_size_pt": 14.0,
+        "font_east_asia": "黑体"
+      },
+      "severity": "warning",
+      "auto_fix": true,
+      "risk_ceiling": "R2",
+      "provenance": {
+        "source": "builtin",
+        "detail": "标书二级标题：四号黑体"
+      },
+      "confidence": 0.85
+    },
+    {
+      "rule_id": "rule:bid.body.jc",
+      "selector": {
+        "semantic_role": "body"
+      },
+      "expected": {
+        "jc": "both"
+      },
+      "severity": "error",
+      "auto_fix": true,
+      "risk_ceiling": "R2",
+      "provenance": {
+        "source": "builtin",
+        "detail": "标书正文两端对齐"
+      },
+      "confidence": 0.95
+    },
+    {
+      "rule_id": "rule:bid.body.indent",
+      "selector": {
+        "semantic_role": "body"
+      },
+      "expected": {
+        "first_line_indent_chars": 200
+      },
+      "severity": "warning",
+      "auto_fix": true,
+      "risk_ceiling": "R2",
+      "provenance": {
+        "source": "builtin",
+        "detail": "标书正文首行缩进 2 字符"
+      },
+      "confidence": 0.85
+    },
+    {
+      "rule_id": "rule:bid.tbl_header",
+      "selector": {
+        "semantic_role": "table_header"
+      },
+      "expected": {
+        "bold": true
+      },
+      "severity": "warning",
+      "auto_fix": true,
+      "risk_ceiling": "R2",
+      "provenance": {
+        "source": "builtin",
+        "detail": "表格表头加粗"
+      },
+      "confidence": 0.8
+    }
+  ]
+}

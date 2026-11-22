@@ -1,0 +1,41 @@
+{
+  "_comment": "正文字号人工标注（2026-10-31）。逐份读模板正文段，判定「模板里到底有没有可用于推断正文字号的真实正文示例」。verdict=prose 表示有真实正文示例、size_pt 是人工判定的正文字号；verdict=no_prose 表示正文池全是目录点线/文献条目/声明/版式要求句/占位符，字号期望不可靠。评分器对 no_prose 的模板把 body_font 记为「不可判定」，不冒充失败。键为模板文件名（不含目录）。",
+  "同济大学研究生学位论文写作参考示例.docx": {
+    "verdict": "prose",
+    "size_pt": 12.0,
+    "note": "11 段真实论文正文（「在实际工程结构的服役过程中…」）为 12pt；14pt 是英文题名与学科门类说明，非正文。产物 10.5pt 属实错。"
+  },
+  "本科论文模板.docx": {
+    "verdict": "prose",
+    "size_pt": 12.0,
+    "note": "真实正文段（「目前对于CCD相机捕获…」）12pt；14pt 是原创性声明、9pt 是表题说明。产物 14pt 属实错。"
+  },
+  "中南民族大学美术学院本科毕业设计创作整套表格（2021届修订）.docx": {
+    "verdict": "no_prose",
+    "note": "材料册/表格模板：正文池是承诺书条款与文献示例，22pt 是字数要求说明。无真实正文示例。"
+  },
+  "江苏师范大学本科毕业论文（设计）模板（理工科参考版）.docx": {
+    "verdict": "no_prose",
+    "note": "正文池混入大量版式要求句（「参考文献标注用中括号…Times New Roman 小4」）与目录行，真实正文不足。"
+  },
+  "温州大学本科毕业设计（论文）参考样式.docx": {
+    "verdict": "no_prose",
+    "note": "正文池 27/40 是目录点线条目，其余为承诺书条款与标题说明。无真实正文示例。"
+  },
+  "Transactions-template-and-instructions-on-how-to-create-your-article-formatted (4).docx": {
+    "verdict": "no_prose",
+    "note": "IEEE Trans 风格说明文档：正文段均为英文排版说明，8pt 那批是参考文献示例，11pt 是作者行。无真实正文示例。"
+  },
+  "IEEE-Access-Word-template.docx": {
+    "verdict": "no_prose",
+    "note": "IEEE Access 投稿模板占位文档：正文段均为说明/占位，7pt 是作者单位、9.5pt 是投稿说明。无真实正文示例。"
+  },
+  "上海交通大学本科生毕业设计（论文）模板--英文模板.docx": {
+    "verdict": "no_prose",
+    "note": "正文池里 12pt 的是目录条目（「1 Chapter I -----」），其余是声明与日期字段。无真实正文示例。"
+  },
+  "江苏师范大学本科毕业论文（设计）模板（文科参考版） .docx": {
+    "verdict": "no_prose",
+    "note": "正文池以「XXXX」占位符与目录点线为主（真实正文 9/20），未形成可采信的正文示例。"
+  }
+}
