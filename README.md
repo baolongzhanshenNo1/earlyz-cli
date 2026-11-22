@@ -1,35 +1,12 @@
-<h1 align="center">EarlyZ CLI</h1>
+# earlyz-cli
 
-<p align="center">
-  <strong>规范模板驱动的 Word 排版引擎</strong> — 专治 Word 排版疑难杂症
-</p>
+> **产品引擎面的开源版，供参考，不是产品本体。** EarlyZ 桌面版的核心排版引擎从主仓同步而来；评测语料、判定器基建与 agent 编排不在仓里。当作研究代码对待：可能有 bug，用前自行审阅调整。
 
-<p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="MIT"></a>
-  <a href="#"><img src="https://img.shields.io/badge/python-≥3.11-blue" alt="Python 3.11+"></a>
-  <a href="#"><img src="https://img.shields.io/badge/platform-Windows%20|%20macOS%20|%20Linux-lightgrey" alt="Platform"></a>
-</p>
+earlyz-cli 是规范模板驱动的 Word 排版引擎，命令行形态。给它一份格式乱的文档和一份规范模板（都是 docx），它把两者的格式差异找出来修掉——只修格式，不动文字内容。三个命令：`format` 按规范排版，`analyze` 把规范模板提取成 YAML 规则，`enforce` 做奇偶页强制（需 LibreOffice）。所有操作在 OOXML ZIP 层直接读写，排版本身不依赖 Word 或 LibreOffice 运行时。
 
----
+它的设计前提是**模板才是排版的规范权威**：源文档只提供排什么，不定义怎么排。字号线距页边距这些取值必须出自模板的 OOXML，不猜、不套学校常量；PDF 渲染走 PDFium（pypdfium2，Apache-2.0/BSD-3），无 AGPL 依赖。设计取舍与能力边界见 [docs/000-philosophy.md](docs/000-philosophy.md)。
 
-## 能解决什么问题
-
-如果你写过长文档——毕业论文、合同、标书、技术手册——你一定经历过这些：
-
-| 折磨 | EarlyZ 怎么做 |
-|------|---------------|
-| 封面莫名其妙出现页眉，删不掉 | 前置页（封面/声明）自动清空页眉页码 |
-| 正文各章页眉全是"参考文献" | 每节创建独立页眉，各章自动显示对应标题 |
-| 目录页码对不上实际内容 | 页码分节编号：前置罗马数字、正文阿拉伯数字 |
-| 每章开头歪在偶数页上 | 奇偶页强制：空白页插入 + 奇数页起始 |
-| 中英文混排字体乱套 | 中文宋体/标题黑体，英文 Times New Roman，分离设置不打架 |
-| 改完一版学校规范又变了，重调一遍 | 规范模板驱动：换一份规范 docx，重新跑一下命令 |
-
-**核心逻辑**：给它一份"格式乱的论文"和一份"学校规范模板"，把格式差异找出来修掉——**只修格式、不动文字内容**。
-
----
-
-## Quickstart
+## 接入
 
 ```bash
 git clone https://github.com/baolongzhanshenNo1/earlyz-cli
@@ -39,126 +16,14 @@ earlyz format examples/示例论文.docx --spec examples/示例模板.docx
 python -m pytest -q tests/                        # 140 条引擎行为守卫（合成夹具）
 ```
 
-> PDF 渲染走 PDFium（`pypdfium2`，Apache-2.0/BSD-3）——没有 AGPL 依赖。
+环境：Python ≥ 3.11；LibreOffice 仅 `enforce` 命令需要。
 
-## 引擎现状（2026-11-22）
+## 引擎现状
 
-排版正确率以**双语料库可判项**计：清洗集 579/579、留出集 388/388，双双 100%。
-开发走 issue 驱动工作流（[workflow-kit](https://github.com/baolongzhanshenNo1/workflow-kit)）：
-每张卡过五层门禁（语法→按改动路径选测试→**摆回即红**→Word 真机视觉→语料对照），
-证据绑定提交指纹。本仓引擎与桌面版同源同步（`scripts/sync_cli_repo.py`）。
+排版正确率以双语料库可判项计：清洗集 579/579、留出集 388/388，双双 100%（2026-11）。开发走 issue 驱动工作流（[workflow-kit](https://github.com/baolongzhanshenNo1/workflow-kit)）：每张卡过五层门禁、证据绑定提交指纹、摆回即红。本仓引擎与桌面版主仓同源同步（`scripts/sync_cli_repo.py` 切面可复跑）。
 
-
----
-
-## ⚡ 快速开始
-
-```bash
-git clone https://github.com/baolongzhanshenNo1/earlyz-cli.git
-cd earlyz-cli
-pip install .
-
-# 最常用：论文按规范排版
-earlyz format my_thesis.docx --spec university_spec.docx
-
-# 提取规范模板的格式规则 → YAML
-earlyz analyze university_spec.docx
-```
-
-### `format` 示例输出
-
-```
-  目标文档 → my_thesis.docx
-  规范模板 → university_spec.docx
-  正在排版…
-
-   修正项  61
-   残留    0
-   诊断    0
-   输出    my_thesis_formatted.docx
-
-排版完成
-```
-
----
-
-## 命令参考
-
-| 命令 | 作用 |
-|------|------|
-| `earlyz format <论文> --spec <规范>` | 按规范模板排版 |
-| `earlyz analyze <规范>` | 提取格式规则 → YAML |
-| `earlyz enforce <文档>` | 奇偶页强制（需 LibreOffice） |
-
----
-
-## 能力清单
-
-| 能力 | 说明 |
-|------|------|
-| 页眉 | 全文各节独立页眉（封面/声明自动清空） |
-| 页码 | 前置罗马数字 / 正文阿拉伯数字 / 封面前置无页码 |
-| 奇偶页 | 每章奇数页起始 / 扉页空白页插入 |
-| 字体 | 中文宋体+标题黑体 / 英文 Times New Roman（Ascii/EastAsian 分离） |
-| 边距 | 严格对齐规范模板 |
-| 分节符 | 拆分合并节 / 补断链引用 |
-| 诊断 | 排版后自动 Fixer 诊断，0 残留才通过 |
-
----
-
-## 环境
-
-- Python ≥ 3.11
-- LibreOffice（仅 `enforce` 命令需要）
-
-Python 依赖通过 `pip install .` 自动安装。
-
----
-
-## 测试
-
-```bash
-pip install -e ".[dev]"
-pytest tests/ -q
-```
-
----
-
-## 架构
-
-```
-earlyz format xxx.docx --spec yyy.docx
-      │
-      ▼
-  EarlyZAgent (earlyz/pipeline/agent.py)
-      │
-      ├── SpecReader   ── 从规范模板提取字体/边距/页眉格式 (earlyz/engine/spec_reader.py)
-      ├── DocDiscover  ── 自动发现文档章节结构 (earlyz/pipeline/doc_discover.py)
-      ├── Reconciler   ── 差异对比 → 生成修复计划 (agent 内嵌)
-      ├── Writer       ── ZIP 级 OOXML 写入（7种操作）(earlyz/engine/writer.py)
-      └── Fixer        ── 诊断执行结果（8种验证器）(earlyz/engine/fixer.py)
-```
-
-所有操作基于 OOXML ZIP 层直接修改，不依赖 Word 或 LibreOffice 运行时。
-
----
-
-## 与桌面版的关系
-
-EarlyZ CLI 是核心排版引擎的**开源子集**（规范模板驱动的 OOXML 排版、三命令）。桌面版在此基础上更多：公式（自研 MathType 组件）、LaTeX、事务回滚、更多动作与 LLM Agent 闭环，为闭源商业版。
-
----
-
-## 相关项目
-
-- [EarlyZ](https://baolongzhanshen.cn) — 对话式排版 Agent 桌面应用（闭源商业版）
-
----
+与桌面版的关系：桌面版是闭源商业产品（[EarlyZ](https://baolongzhanshen.cn)），在此引擎之上另有公式（自研 MathType 对标组件）、LaTeX、事务回滚与 LLM Agent 闭环。
 
 ## License
 
-MIT — 详见 [LICENSE](LICENSE)
-
-<p align="center">
-  <sub>by <a href="https://github.com/baolongzhanshenNo1">baolongzhanshenNo1</a></sub>
-</p>
+[MIT](LICENSE)
